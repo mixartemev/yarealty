@@ -3,9 +3,6 @@ import json
 import argparse
 import requests
 
-# import csv
-# import io
-
 API_URL = "https://realty.yandex.ru/gate/react-page/get/?rgid={0}&type={1}&category={2}&page={3}\
     &_format=react&_pageType=search&_providers=react-search-data"
 
