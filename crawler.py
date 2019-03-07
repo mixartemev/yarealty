@@ -2,6 +2,7 @@ import time
 import json
 import argparse
 import requests
+
 # import csv
 # import io
 
@@ -34,15 +35,15 @@ def read_cookies():
 
 def make_request(args, page_number):
     headers = {
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                "Accept-Encoding": "gzip, deflate, br",
-                "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
-                "Cache-Control": "max-age=0",
-                "Connection": "keep-alive",
-                "Host": "realty.yandex.ru",
-                "Upgrade-Insecure-Requests": "1",
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0"
-              }
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+        "Cache-Control": "max-age=0",
+        "Connection": "keep-alive",
+        "Host": "realty.yandex.ru",
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0"
+    }
     cookies = read_cookies()
 
     url = API_URL.format(args.rgid, args.type, args.category, page_number)
@@ -77,49 +78,49 @@ def raw_to_array(raw_data):
             extract(e, "roomsTotal"))
 
         yield {
-                 "header": header,
-                 "advert_type": extract(e, "offerType"),
-                 "date_of_public": extract(e, "creationDate"),
-                 "price": extract(e, "price.value"),
-                 "sale_type": None,
-                 "description": extract(e, "description"),
-                 "additional_info": None,
-                 "seller": {
-                    "seller_name": extract(e, "author.name"),
-                    "seller_phone": None  # phone is encrypted
-                 },
-                 "house": {
-                    "total_floor": extract(e, "floorsTotal"),
-                    "elevator": "да" if extract(e, "building.improvements.LIFT") else "нет",
-                    "home_type": extract(e, "building.buildingType"),
-                    "year_of_construction": extract(e, "building.builtYear"),
-                    "state": extract(e, "building.buildingState"),
-                    "address": {
-                        "address": extract(e, "location.geocoderAddress"),
-                        "city_name": None,
-                        "latitude": extract(e, "location.point.latitude"),
-                        "longitude": extract(e, "location.point.longitude"),
-                    }
-                 },
-                 "apartments": {
-                    "price_per_m2": price_per_m2,
-                    "floor": floor,
-                    "room_count": extract(e, "roomsTotal"),
-                    "picture": extract(e, "fullImages"),
-                    "repairs": None,
-                    "bathroom_type": extract(e, "house.bathroomUnit"),
-                    "window_view": extract(e, "house.windowView"),
-                    "furniture": extract(e, "apartment.improvements.NO_FURNITURE") is True,
-                    "ceiling_height": extract(e, "ceilingHeight"),
-                    "balcony": 1 if extract(e, "house.balconyType") is not None else 0,
-                    "area": {
-                        "total_area": extract(e, "area.value"),
-                        "living_area": extract(e, "livingSpace.value"),
-                        "rooms_area": extract(e, "livingSpace.value"),
-                        "kitchen_area": extract(e, "kitchenSpace.value")
-                    }
-                 }
-              }
+            "header": header,
+            "advert_type": extract(e, "offerType"),
+            "date_of_public": extract(e, "creationDate"),
+            "price": extract(e, "price.value"),
+            "sale_type": None,
+            "description": extract(e, "description"),
+            "additional_info": None,
+            "seller": {
+                "seller_name": extract(e, "author.name"),
+                "seller_phone": None  # phone is encrypted
+            },
+            "house": {
+                "total_floor": extract(e, "floorsTotal"),
+                "elevator": "да" if extract(e, "building.improvements.LIFT") else "нет",
+                "home_type": extract(e, "building.buildingType"),
+                "year_of_construction": extract(e, "building.builtYear"),
+                "state": extract(e, "building.buildingState"),
+                "address": {
+                    "address": extract(e, "location.geocoderAddress"),
+                    "city_name": None,
+                    "latitude": extract(e, "location.point.latitude"),
+                    "longitude": extract(e, "location.point.longitude"),
+                }
+            },
+            "apartments": {
+                "price_per_m2": price_per_m2,
+                "floor": floor,
+                "room_count": extract(e, "roomsTotal"),
+                "picture": extract(e, "fullImages"),
+                "repairs": None,
+                "bathroom_type": extract(e, "house.bathroomUnit"),
+                "window_view": extract(e, "house.windowView"),
+                "furniture": extract(e, "apartment.improvements.NO_FURNITURE") is True,
+                "ceiling_height": extract(e, "ceilingHeight"),
+                "balcony": 1 if extract(e, "house.balconyType") is not None else 0,
+                "area": {
+                    "total_area": extract(e, "area.value"),
+                    "living_area": extract(e, "livingSpace.value"),
+                    "rooms_area": extract(e, "livingSpace.value"),
+                    "kitchen_area": extract(e, "kitchenSpace.value")
+                }
+            }
+        }
 
 
 def main():
