@@ -27,7 +27,7 @@ class OutputWriter:
 
 def read_cookies():
     with open("./cookies.txt") as f:
-        { cookie.split(" ", 2)[0]: cookie.split(" ", 2)[1] for cookie in f  }
+        return { cookie.split(" ", 2)[0]: cookie.split(" ", 2)[1] for cookie in f  }
 
 def make_request(args, page_number):
     headers = { 
