@@ -5,7 +5,8 @@ import requests
 import csv
 import io
 
-API_URL = "https://realty.yandex.ru/gate/react-page/get/?rgid={0}&type={1}&category={2}&page={3}&_format=react&_pageType=search&_providers=react-search-data"
+API_URL = "https://realty.yandex.ru/gate/react-page/get/?rgid={0}&type={1}&category={2}&page={3}\
+    &_format=react&_pageType=search&_providers=react-search-data"
 
 
 class OutputWriter:
@@ -25,26 +26,29 @@ class OutputWriter:
         json.dump(self.data, self.file)
         self.file.close()
 
+
 def read_cookies():
     with open("./cookies.txt") as f:
-        return { cookie.split(" ", 2)[0]: cookie.split(" ", 2)[1] for cookie in f  }
+        return {cookie.split(" ", 2)[0]: cookie.split(" ", 2)[1] for cookie in f}
+
 
 def make_request(args, page_number):
-    headers = { 
-                "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                "Accept-Encoding":"gzip, deflate, br",
-                "Accept-Language":"ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
-                "Cache-Control":"max-age=0",
-                "Connection":"keep-alive",
-                "Host":"realty.yandex.ru",
-                "Upgrade-Insecure-Requests":"1",
-                "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0" 
+    headers = {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+                "Cache-Control": "max-age=0",
+                "Connection": "keep-alive",
+                "Host": "realty.yandex.ru",
+                "Upgrade-Insecure-Requests": "1",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0"
               }
     cookies = read_cookies()
-    
+
     url = API_URL.format(args.rgid, args.type, args.category, page_number)
     r = requests.get(url, headers=headers, cookies=cookies)
     return r.json()
+
 
 def try_extract_value(dic, path):
     keys = path.split(".")
@@ -55,6 +59,7 @@ def try_extract_value(dic, path):
         dv = dv[key]
     return dv
 
+
 def raw_to_array(raw_data):
     extract = try_extract_value
     for e in raw_data['response']['search']['offers']['entities']:
@@ -63,9 +68,9 @@ def raw_to_array(raw_data):
             price_per_m2 = extract(e, "price.valuePerPart")
 
         floor = None
-        floorsOffered = extract(e, "floorsOffered")
-        if type(floorsOffered) is list and len(floorsOffered) > 0:
-            floor = floorsOffered[0]
+        floors_offered = extract(e, "floorsOffered")
+        if type(floors_offered) is list and len(floors_offered) > 0:
+            floor = floors_offered[0]
 
         header = "{0} м², {1}-комнатная".format(
             extract(e, "area.value"),
@@ -81,7 +86,7 @@ def raw_to_array(raw_data):
                  "additional_info": None,
                  "seller": {
                     "seller_name": extract(e, "author.name"),
-                    "seller_phone": None # phone is encrypted
+                    "seller_phone": None  # phone is encrypted
                  },
                  "house": {
                     "total_floor": extract(e, "floorsTotal"),
@@ -116,22 +121,16 @@ def raw_to_array(raw_data):
                  }
               }
 
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--output_file', type=str, default='output/output.json',
-                       help='directory to save parsed data')
-    parser.add_argument('--page_number', type=int, default=1,
-                       help='page number to start')
-    parser.add_argument('--delay', type=float, default=10,
-                       help='delay between requests')
-    parser.add_argument('--rgid', type=int, default=187,
-                       help='region id')
-    parser.add_argument('--type', type=str, default="SELL",
-                       help='realty type')
-    parser.add_argument('--category', type=str, default="APARTMENT",
-                       help='realty category')
+    parser.add_argument('--output_file', type=str, default='output/output.json', help='directory to save parsed data')
+    parser.add_argument('--page_number', type=int, default=1, help='page number to start')
+    parser.add_argument('--delay', type=float, default=10, help='delay between requests')
+    parser.add_argument('--rgid', type=int, default=187, help='region id')
+    parser.add_argument('--type', type=str, default="SELL", help='realty type')
+    parser.add_argument('--category', type=str, default="APARTMENT", help='realty category')
     args = parser.parse_args()
-
 
     current_page = args.page_number
     with OutputWriter(args.output_file, raw_to_array) as writer:
