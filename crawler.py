@@ -52,7 +52,7 @@ def try_extract_value(dic, path):
     keys = path.split(".")
     dv = dic
     for key in keys:
-        if not key in dv:
+        if key not in dv:
             return None
         dv = dv[key]
     return dv
