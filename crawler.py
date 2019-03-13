@@ -2,6 +2,7 @@ import time
 import json
 import argparse
 import requests
+import io
 
 API_URL = "https://realty.yandex.ru/gate/react-page/get/?rgid={0}&type={1}&category={2}&page={3}&_format=react&_pageType=search&_providers=react-search-data"
 
@@ -25,11 +26,11 @@ class OutputWriter:
 
 
 def read_cookies():
-    with open("./cookies.txt") as f:
-        return {cookie.split(" ", 2)[0]: cookie.split(" ", 2)[1] for cookie in f}
+    with open("./cookies.txt", encoding='utf-8', newline="\n") as f:
+        return {cookie.split(" ", 2)[0]: cookie.split(" ", 2)[1].replace('\n', '') for cookie in f}
 
 
-def make_request(args, page_number):
+def make_request(args, page_number) -> dict:
     headers = {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Encoding": "gzip, deflate, br",
@@ -139,7 +140,9 @@ def main():
                 if 'error' in result:
                     break
 
-                writer.write(result)
+                rr = result['response']['search']['offers']
+
+                writer.write(rr)
 
                 current_page += 1
                 print("Waiting {0} seconds".format(args.delay))
