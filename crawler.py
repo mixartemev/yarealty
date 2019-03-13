@@ -1,10 +1,28 @@
 import time
 import json
 import argparse
+from pprint import pprint
 import requests
-import io
+import asyncio
+import asyncpg
+
+
+import asyncio
+import asyncpg
+
+
+async def run():
+    conn = await asyncpg.connect(user='mix', password='321',
+                                 database='yrlp', host='127.0.0.1')
+    values = await conn.fetch('''SELECT * FROM offers;''')
+    await conn.close()
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(run())
+
 
 API_URL = "https://realty.yandex.ru/gate/react-page/get/?rgid={0}&type={1}&category={2}&page={3}&_format=react&_pageType=search&_providers=react-search-data"
+# &searchType=newbuilding-search
 
 
 class OutputWriter:
@@ -140,7 +158,7 @@ def main():
                 if 'error' in result:
                     break
 
-                rr = result['response']['search']['offers']
+                rr = result['response']['search']['offers']['entities']
 
                 writer.write(rr)
 
