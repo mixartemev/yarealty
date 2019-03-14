@@ -7,14 +7,13 @@ import asyncio
 import asyncpg
 
 
-import asyncio
-import asyncpg
-
-
 async def run():
-    conn = await asyncpg.connect(user='mix', password='321',
-                                 database='yrlp', host='127.0.0.1')
-    values = await conn.fetch('''SELECT * FROM offers;''')
+    conn = await asyncpg.connect('postgresql://mix:321@localhost/yrlp')
+    # Insert a record into the created table.
+    await conn.execute('''
+            INSERT INTO offers(id, title, rooms) VALUES(1, $1, $2)
+        ''', 'direct from PY', 23)
+    values = await conn.fetch('''SELECT * FROM offers''')
     await conn.close()
 
 loop = asyncio.get_event_loop()
