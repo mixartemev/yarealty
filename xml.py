@@ -1,28 +1,13 @@
-import time
-import json
 import argparse
+import json
+import time
+
+import dicttoxml
 import requests
 
 API_URL = "https://realty.yandex.ru/gate/react-page/get/?rgid={0}&type={1}&category={2}&page={3}&_format=react" \
-          "&_pageType=search&_providers=react-search-data&pageSize=2"  # &searchType=newbuilding-search
-
-
-class OutputWriter:
-    def __init__(self, path, converter):
-        self.converter = converter
-        self.path = path
-        self.data = []
-
-    def write(self, data):
-        self.data += self.converter(data)
-
-    def __enter__(self):
-        self.file = open(self.path, 'w', encoding="utf8")
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        json.dump(self.data, self.file)
-        self.file.close()
+          "&_pageType=search&_providers=react-search-data&pageSize=2"
+# &searchType=newbuilding-search
 
 
 def read_cookies():
@@ -120,11 +105,32 @@ def raw_to_array(raw_data):
         }
 
 
+class OutputWriter:
+    def __init__(self, path, converter):
+        self.converter = converter
+        self.path = path
+        self.data = []
+
+    def write(self, data):
+        self.data += self.converter(data)
+
+    def __enter__(self):
+        self.file = open(self.path, 'w', encoding="utf8")
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        xml = dicttoxml.dicttoxml(self.data)
+        xmld = xml.decode()
+        self.file.write(xmld)
+        # json.dump(self.data, self.file)
+        self.file.close()
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--output_file', type=str, default='output/output.json', help='directory to save parsed data')
+    parser.add_argument('--output_file', type=str, default='output/output.xml', help='directory to save parsed data')
     parser.add_argument('--page_number', type=int, default=1, help='page number to start')
-    parser.add_argument('--delay', type=float, default=10, help='delay between requests')
+    parser.add_argument('--delay', type=float, default=5, help='delay between requests')
     parser.add_argument('--rgid', type=int, default=187, help='region id')
     parser.add_argument('--type', type=str, default="SELL", help='realty type')
     parser.add_argument('--category', type=str, default="APARTMENT", help='realty category')
@@ -132,26 +138,25 @@ def main():
 
     current_page = args.page_number
     with OutputWriter(args.output_file, raw_to_array) as writer:
-        while True:
-            try:
-                print("Processing page {}...".format(current_page))
-                result = make_request(args, current_page)
+        try:
+            print("Processing page {}...".format(current_page))
+            result = make_request(args, current_page)
 
-                if 'error' in result:
-                    break
+            if 'error' in result:
+                exit()
 
-                writer.write(result['response']['search']['offers']['entities'])
+            writer.write(result['response']['search']['offers']['entities'])
 
-                current_page += 1
-                print("Waiting {0} seconds".format(args.delay))
-                time.sleep(args.delay)
-            except Exception as e:
-                print(e)
-                print("Unknown exception, waiting 60 seconds.")
-                time.sleep(60)
-            except KeyboardInterrupt:
-                print("Finishing...")
-                break
+            current_page += 1
+            print("Waiting {0} seconds".format(args.delay))
+            time.sleep(args.delay)
+        except Exception as e:
+            print(e)
+            print("Unknown exception, waiting 60 seconds.")
+            time.sleep(60)
+        except KeyboardInterrupt:
+            print("Finishing...")
+            exit()
     print("Done")
 
 
