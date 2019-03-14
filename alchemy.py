@@ -2,9 +2,30 @@ import argparse
 import time
 import requests
 import writer
+from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, ForeignKey
+from sqlalchemy.orm import mapper
 
 API_URL = "https://realty.yandex.ru/gate/react-page/get/?rgid={0}&type={1}&category={2}&page={3}&_format=react" \
           "&_pageType=search&_providers=react-search-data&pageSize=2"  # &searchType=newbuilding-search
+
+engine = create_engine('postgresql://mix:321@localhost/yrlp', echo=False)
+metadata = MetaData()
+users_table = Table('users', metadata,
+                    Column('id', Integer, primary_key=True),
+                    Column('name', String),
+                    Column('fullname', String),
+                    Column('password', String)
+                    )
+
+
+class User(object):
+    def __init__(self, name, fullname, password):
+        self.name = name
+        self.fullname = fullname
+        self.password = password
+
+    def __repr__(self):
+        return "<User('%s','%s', '%s')>" % (self.name, self.fullname, self.password)
 
 
 def read_cookies():
@@ -103,6 +124,11 @@ def raw_to_array(raw_data):
 
 
 def main():
+    metadata.create_all(engine)
+    print(mapper(User, users_table))
+    user = User("Вася", "Василий", "qweasdzxc")
+    print(user.id)
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--output_file', type=str, default='output/output.json', help='directory to save parsed data')
     parser.add_argument('--page_number', type=int, default=1, help='page number to start')
