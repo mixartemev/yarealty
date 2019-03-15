@@ -1,10 +1,10 @@
 import argparse
 import time
 import requests
-import writer
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+
 
 API_URL = "https://realty.yandex.ru/gate/react-page/get/?rgid={0}&type={1}&category={2}&page={3}&_format=react" \
           "&_pageType=search&_providers=react-search-data&pageSize=2"  # &searchType=newbuilding-search
@@ -31,78 +31,6 @@ def make_request(args, page_number) -> dict:
     url = API_URL.format(args.rgid, args.type, args.category, page_number)
     r = requests.get(url, headers=headers, cookies=cookies)
     return r.json()
-
-
-def try_extract_value(dic, path):
-    keys = path.split(".")
-    dv = dic
-    for key in keys:
-        if key not in dv:
-            return None
-        dv = dv[key]
-    return dv
-
-
-def raw_to_array(raw_data):
-    extract = try_extract_value
-    for e in raw_data:
-        price_per_m2 = None
-        if extract(e, "price.unitPerPart") == "SQUARE_METER":
-            price_per_m2 = extract(e, "price.valuePerPart")
-
-        floor = None
-        floors_offered = extract(e, "floorsOffered")
-        if type(floors_offered) is list and len(floors_offered) > 0:
-            floor = floors_offered[0]
-
-        header = "{0} м², {1}-комнатная".format(
-            extract(e, "area.value"),
-            extract(e, "roomsTotal"))
-
-        yield {
-            "header": header,
-            "advert_type": extract(e, "offerType"),
-            "date_of_public": extract(e, "creationDate"),
-            "price": extract(e, "price.value"),
-            "sale_type": None,
-            "description": extract(e, "description"),
-            "additional_info": None,
-            "seller": {
-                "seller_name": extract(e, "author.name"),
-                "seller_phone": None  # phone is encrypted
-            },
-            "house": {
-                "total_floor": extract(e, "floorsTotal"),
-                "elevator": "да" if extract(e, "building.improvements.LIFT") else "нет",
-                "home_type": extract(e, "building.buildingType"),
-                "year_of_construction": extract(e, "building.builtYear"),
-                "state": extract(e, "building.buildingState"),
-                "address": {
-                    "address": extract(e, "location.geocoderAddress"),
-                    "city_name": None,
-                    "latitude": extract(e, "location.point.latitude"),
-                    "longitude": extract(e, "location.point.longitude"),
-                }
-            },
-            "apartments": {
-                "price_per_m2": price_per_m2,
-                "floor": floor,
-                "room_count": extract(e, "roomsTotal"),
-                "picture": extract(e, "fullImages"),
-                "repairs": None,
-                "bathroom_type": extract(e, "house.bathroomUnit"),
-                "window_view": extract(e, "house.windowView"),
-                "furniture": extract(e, "apartment.improvements.NO_FURNITURE") is True,
-                "ceiling_height": extract(e, "ceilingHeight"),
-                "balcony": 1 if extract(e, "house.balconyType") is not None else 0,
-                "area": {
-                    "total_area": extract(e, "area.value"),
-                    "living_area": extract(e, "livingSpace.value"),
-                    "rooms_area": extract(e, "livingSpace.value"),
-                    "kitchen_area": extract(e, "kitchenSpace.value")
-                }
-            }
-        }
 
 
 def main():
@@ -140,28 +68,29 @@ def main():
     parser.add_argument('--type', type=str, default="SELL", help='realty type')
     parser.add_argument('--category', type=str, default="APARTMENT", help='realty category')
     args = parser.parse_args()
-
     current_page = args.page_number
-    with writer.OutputWriter(args.output_file, raw_to_array) as wrt:
+
+    while True:
         try:
             print("Processing page {}...".format(current_page))
             result = make_request(args, current_page)
 
             if 'error' in result:
-                exit()
+                break
 
-            wrt.write(result['response']['search']['offers']['entities'])
+            saver.save(result['response']['search']['offers']['entities'])
 
             current_page += 1
             print("Waiting {0} seconds".format(args.delay))
             time.sleep(args.delay)
         except Exception as e:
             print(e)
-            print("Unknown exception, waiting 60 seconds.")
-            time.sleep(60)
+            print("Unknown exception, waiting 30 seconds.")
+            time.sleep(30)
         except KeyboardInterrupt:
             print("Finishing...")
-            exit()
+            break
+
     print("Done")
 
 
