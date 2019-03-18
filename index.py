@@ -1,7 +1,7 @@
 import argparse
 import time
 import requests
-from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, ForeignKey
+from sqlalchemy import create_engine, Table, Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -43,7 +43,7 @@ def main():
     base = declarative_base()
 
     class User(base):
-        __tablename__ = 'users'
+        __tablename__ = 'offers'
         id = Column(Integer, primary_key=True)
         name = Column(String)
         fullname = Column(String)
