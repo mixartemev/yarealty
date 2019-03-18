@@ -1,10 +1,8 @@
 import argparse
 import time
 import requests
-from sqlalchemy import create_engine, Table, Column, Integer, String, Boolean, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 
+from models import session, Offer
 
 API_URL = "https://realty.yandex.ru/gate/react-page/get/?rgid={0}&type={1}&category={2}&page={3}&_format=react" \
           "&_pageType=search&_providers=react-search-data&pageSize=2"  # &searchType=newbuilding-search
@@ -34,32 +32,6 @@ def make_request(args, page_number) -> dict:
 
 
 def main():
-    # metadata.create_all(engine)
-    # print(mapper(User, users_table))
-    # user = User("Вася", "Василий", "qweasdzxc")
-    # print(user.id)
-
-    engine = create_engine('postgresql://mix:321@localhost/yrlp', echo=False)
-    base = declarative_base()
-
-    class User(base):
-        __tablename__ = 'offers'
-        id = Column(Integer, primary_key=True)
-        name = Column(String)
-        fullname = Column(String)
-        password = Column(String)
-
-        def __init__(self, name, fullname, password):
-            self.name = name
-            self.fullname = fullname
-            self.password = password
-
-        def __repr__(self):
-            return "<User('%s','%s', '%s')>" % (self.name, self.fullname, self.password)
-
-    # Создание таблицы
-    base.metadata.create_all(engine)
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--output_file', type=str, default='output/output.json', help='directory to save parsed data')
     parser.add_argument('--page_number', type=int, default=1, help='page number to start')
@@ -69,28 +41,36 @@ def main():
     parser.add_argument('--category', type=str, default="APARTMENT", help='realty category')
     args = parser.parse_args()
     current_page = args.page_number
+    try:
+        print("Processing page {}...".format(current_page))
+        result = make_request(args, current_page)
 
-    while True:
-        try:
-            print("Processing page {}...".format(current_page))
-            result = make_request(args, current_page)
+        if 'error' in result:
+            exit()
 
-            if 'error' in result:
-                break
+        res = result['response']['search']['offers']['entities']
 
-            saver.save(result['response']['search']['offers']['entities'])
+        for ent in res:
+            session.add(Offer(
+                ent['offerId'],
+                ent['active'],
+                ent['area']['value']  # ,
+                # ent['building']['houseId'],
+                # ent['building']['siteId']
+            ))
 
-            current_page += 1
-            print("Waiting {0} seconds".format(args.delay))
-            time.sleep(args.delay)
-        except Exception as e:
-            print(e)
-            print("Unknown exception, waiting 30 seconds.")
-            time.sleep(30)
-        except KeyboardInterrupt:
-            print("Finishing...")
-            break
+        session.commit()
 
+        current_page += 1
+        print("Waiting {0} seconds".format(args.delay))
+        time.sleep(args.delay)
+    except Exception as e:
+        print(e)
+        print("Unknown exception, waiting 60 seconds.")
+        time.sleep(60)
+    except KeyboardInterrupt:
+        print("Finishing...")
+        exit()
     print("Done")
 
 
