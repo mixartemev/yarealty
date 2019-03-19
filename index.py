@@ -35,7 +35,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output_file', type=str, default='output/output.json', help='directory to save parsed data')
     parser.add_argument('--page_number', type=int, default=1, help='page number to start')
-    parser.add_argument('--delay', type=float, default=5, help='delay between requests')
+    parser.add_argument('--delay', type=float, default=3, help='delay between requests')
     parser.add_argument('--rgid', type=int, default=187, help='region id')
     parser.add_argument('--type', type=str, default="SELL", help='realty type')
     parser.add_argument('--category', type=str, default="APARTMENT", help='realty category')
@@ -54,13 +54,12 @@ def main():
             session.add(Offer(
                 ent['offerId'],
                 ent['active'],
-                ent['area']['value']  # ,
-                # ent['building']['houseId'],
-                # ent['building']['siteId']
+                ent['area']['value'],
+                ent['building'].get('houseId'),
+                ent['building'].get('siteId')
             ))
 
         session.commit()
-
         current_page += 1
         print("Waiting {0} seconds".format(args.delay))
         time.sleep(args.delay)
