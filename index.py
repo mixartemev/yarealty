@@ -51,7 +51,7 @@ def main():
         res = result['response']['search']['offers']['entities']
 
         for ent in res:
-            session.add(Offer(
+            session.merge(Offer(
                 ent['offerId'],
                 ent['active'],
                 ent['area']['value'],
