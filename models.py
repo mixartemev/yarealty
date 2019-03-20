@@ -1,7 +1,7 @@
-from sqlalchemy import create_engine, Column, ForeignKey,\
-    Integer, BigInteger, DECIMAL, String, Boolean
+from sqlalchemy import create_engine, Column, ForeignKey, \
+    Integer, BigInteger, SmallInteger, DECIMAL, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship
 
 # Create connection
 engine = create_engine('postgresql://mix:321@localhost/yrlp', echo=False)
@@ -9,23 +9,61 @@ engine = create_engine('postgresql://mix:321@localhost/yrlp', echo=False)
 Base = declarative_base()
 
 
+class Photo(Base):
+    __tablename__ = 'photos'
+    id = Column(BigInteger, primary_key=True)
+    offerId = Column(BigInteger)
+    # Belongs to Offer
+    offer = relationship("Offer", back_populates="photos")
+    url = Column(String)
+
+    def __init__(self, id, offerId, url):
+        self.id = id
+        self.offerId = offerId
+        self.url = url
+
+    def __repr__(self):
+        return "<Photo('%s','%s', '%s')>" % (self.id, self.offerId, self.url)
+
+
 class Offer(Base):
     __tablename__ = 'offers'
     id = Column(BigInteger, primary_key=True)
     active = Column(Boolean)
     area = Column(DECIMAL(6, 2))
-    houseId = Column(Integer, nullable=True)
-    siteId = Column(Integer, nullable=True)
+    buildingId = Column(Integer, ForeignKey('buildings.id'), nullable=True)
+    # Belongs to Building
+    building = relationship("Building", back_populates="offers")
+    # Have many Photos
+    photos = relationship("Photos", order_by=Photo.id, back_populates="offer")
 
-    def __init__(self, id, active, area, houseId, siteId):
+    def __init__(self, id, active, area, buildingId):
         self.id = id
         self.active = active
         self.area = area
-        self.houseId = houseId
-        self.siteId = siteId
+        self.buildingId = buildingId
 
     def __repr__(self):
         return "<User('%s','%s', '%s')>" % (self.id, self.area, self.active)
+
+
+class Building(Base):
+    __tablename__ = 'buildings'
+    id = Column(BigInteger, primary_key=True)
+    builtYear = Column(SmallInteger)
+    builtQuarter = Column(SmallInteger)
+    siteId = Column(Integer, nullable=True)
+    # Have many Offers
+    offers = relationship("Offers", order_by=Offer.id, back_populates="building")
+
+    def __init__(self, id, builtYear, builtQuarter, siteId):
+        self.id = id
+        self.builtYear = builtYear
+        self.builtQuarter = builtQuarter
+        self.siteId = siteId
+
+    def __repr__(self):
+        return "<User('%s','%s', '%s')>" % (self.id, self.builtYear, self.siteId)
 
 
 # Create all not created defined tables
