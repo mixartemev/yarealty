@@ -55,8 +55,7 @@ def main():
                 ent['offerId'],
                 ent['active'],
                 ent['area']['value'],
-                ent['building'].get('houseId'),
-                ent['building'].get('siteId')
+                ent['building'].get('houseId')
             ))
 
         session.commit()

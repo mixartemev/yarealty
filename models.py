@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, Column, ForeignKey, \
-    Integer, BigInteger, SmallInteger, DECIMAL, String, Boolean
+    Integer, BigInteger, SmallInteger, DECIMAL, String, Boolean, Sequence
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 
@@ -11,16 +11,17 @@ Base = declarative_base()
 
 class Photo(Base):
     __tablename__ = 'photos'
-    id = Column(BigInteger, primary_key=True)
+    id = Column(Integer, Sequence('photo_id_seq'), primary_key=True)
     offerId = Column(BigInteger)
     # Belongs to Offer
     offer = relationship("Offer", back_populates="photos")
     url = Column(String)
 
-    def __init__(self, id, offerId, url):
-        self.id = id
-        self.offerId = offerId
-        self.url = url
+    # # Auto ?
+    # def __init__(self, offerId, url):
+    #     self.id = id
+    #     self.offerId = offerId
+    #     self.url = url
 
     def __repr__(self):
         return "<Photo('%s','%s', '%s')>" % (self.id, self.offerId, self.url)

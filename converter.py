@@ -47,8 +47,16 @@ def convert_offer(raw_data):
             extract(e, "apartment.improvements.NO_FURNITURE") is True,
             extract(e, "ceilingHeight"),
             1 if extract(e, "house.balconyType") is not None else 0,
-
         )
+
+
+def save_images(offerId, images):
+    from urllib.request import urlretrieve
+    for i in images:
+        from models import Photo
+        im = Photo(offerId=offerId, url=i) # named params because no Photo.__init__
+        path = "images/{0}/{1}.jpg".format(offerId, im.id)
+        urlretrieve(i, path)
 
 
 def convert_building(raw_data):
@@ -56,23 +64,22 @@ def convert_building(raw_data):
     for e in raw_data:
 
         yield (
-
-            extract(e, "apartment.renovation")
-            {
-            'builtYear': 2019,
-            'builtQuarter': 4,
-            'buildingState': 'UNFINISHED',
-            'buildingType': 'MONOLIT',
-                        'improvements': {'LIFT': True,
-            'RUBBISH_CHUTE': True,
-            'SECURITY': True},
-            'siteId': 194000,
-                        'siteName': 'Green park',
-            'siteDisplayName': 'Жилой район Green park',
-            'houseId': '843164',
-                        'heatingType': 'UNKNOWN',
-                        'buildingImprovementsMap': {'LIFT': True,
-            'RUBBISH_CHUTE': True,
-            'SECURITY': True
-            }
+            # extract(e, "apartment.renovation")
+            # {
+            # 'builtYear': 2019,
+            # 'builtQuarter': 4,
+            # 'buildingState': 'UNFINISHED',
+            # 'buildingType': 'MONOLIT',
+            #             'improvements': {'LIFT': True,
+            # 'RUBBISH_CHUTE': True,
+            # 'SECURITY': True},
+            # 'siteId': 194000,
+            #             'siteName': 'Green park',
+            # 'siteDisplayName': 'Жилой район Green park',
+            # 'houseId': '843164',
+            #             'heatingType': 'UNKNOWN',
+            #             'buildingImprovementsMap': {'LIFT': True,
+            # 'RUBBISH_CHUTE': True,
+            # 'SECURITY': True
+            # }
         )
