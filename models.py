@@ -12,16 +12,16 @@ Base = declarative_base()
 class Photo(Base):
     __tablename__ = 'photos'
     id = Column(Integer, Sequence('photo_id_seq'), primary_key=True)
-    offerId = Column(BigInteger)
+    offerId = Column(BigInteger, ForeignKey('offers.id'), nullable=True)
     # Belongs to Offer
     offer = relationship("Offer", back_populates="photos")
     url = Column(String)
 
-    # # Auto ?
-    # def __init__(self, offerId, url):
-    #     self.id = id
-    #     self.offerId = offerId
-    #     self.url = url
+    # Auto ?
+    def __init__(self, offerId, url):
+        # self.id = id
+        self.offerId = offerId
+        self.url = url
 
     def __repr__(self):
         return "<Photo('%s','%s', '%s')>" % (self.id, self.offerId, self.url)
