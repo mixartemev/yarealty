@@ -36,7 +36,7 @@ class Offer(Base):
     # Belongs to Building
     building = relationship("Building", back_populates="offers")
     # Have many Photos
-    photos = relationship("Photos", order_by=Photo.id, back_populates="offer")
+    photos = relationship("Photo", order_by=Photo.id, back_populates="offer")
 
     def __init__(self, id, active, area, buildingId):
         self.id = id
@@ -55,7 +55,7 @@ class Building(Base):
     builtQuarter = Column(SmallInteger)
     siteId = Column(Integer, nullable=True)
     # Have many Offers
-    offers = relationship("Offers", order_by=Offer.id, back_populates="building")
+    offers = relationship("Offer", order_by=Offer.id, back_populates="building")
 
     def __init__(self, id, builtYear, builtQuarter, siteId):
         self.id = id
