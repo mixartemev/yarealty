@@ -2,6 +2,7 @@ import argparse
 import time
 import requests
 
+from converter import convert_building
 from models import session, Offer
 
 API_URL = "https://realty.yandex.ru/gate/react-page/get/?rgid={0}&type={1}&category={2}&page={3}&_format=react" \
@@ -50,6 +51,7 @@ def main():
 
         res = result['response']['search']['offers']['entities']
 
+        session.merge(convert_building(res))
         for ent in res:
             session.merge(Offer(
                 ent['offerId'],
