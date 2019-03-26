@@ -2,8 +2,8 @@ import argparse
 import time
 import requests
 
-from converter import convert_building
-from models import session, Offer
+from converter import convert
+from models import session, Offer, Building, Photo
 
 API_URL = "https://realty.yandex.ru/gate/react-page/get/?rgid={0}&type={1}&category={2}&page={3}&_format=react" \
           "&_pageType=search&_providers=react-search-data&pageSize=2"  # &searchType=newbuilding-search
@@ -50,15 +50,18 @@ def main():
             exit()
 
         res = result['response']['search']['offers']['entities']
-
-        session.merge(convert_building(res))
-        for ent in res:
-            session.merge(Offer(
-                ent['offerId'],
-                ent['active'],
-                ent['area']['value'],
-                ent['building'].get('houseId')
-            ))
+        res = list(filter(lambda r: r['building'].get('buildingId'), res))
+        for e in convert(res):
+            session.merge(Building(*e['building']))
+            session.merge(Offer(*e['offer']))
+            session.merge(Photo(*e['photo']))
+        # for ent in res:
+        #     session.merge(Offer(
+        #         ent['offerId'],
+        #         ent['active'],
+        #         ent['area']['value'],
+        #         ent['building'].get('houseId')
+        #     ))
 
         session.commit()
         current_page += 1
