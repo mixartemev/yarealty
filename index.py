@@ -6,7 +6,7 @@ from converter import convert
 from models import session, Offer, Building, Photo
 
 API_URL = "https://realty.yandex.ru/gate/react-page/get/?rgid={0}&type={1}&category={2}&page={3}&_format=react" \
-          "&_pageType=search&_providers=react-search-data&pageSize=2"  # &searchType=newbuilding-search
+          "&_pageType=search&_providers=react-search-data&pageSize=7"  # &searchType=newbuilding-search
 
 
 def read_cookies():

@@ -1,5 +1,7 @@
+# import enum
 from sqlalchemy import create_engine, Column, ForeignKey, \
     Integer, BigInteger, SmallInteger, DECIMAL, String, Boolean, Sequence
+from sqlalchemy.dialects.mysql import ENUM, SET
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 
@@ -53,6 +55,8 @@ class Building(Base):
     id = Column(BigInteger, primary_key=True)
     builtYear = Column(SmallInteger)
     builtQuarter = Column(SmallInteger)
+    buildingState = Column(ENUM("UNFINISHED", "bar", "baz"))
+    buildingTypeEnum = Column(SET("MONOLIT", "bar", "baz"))
     siteId = Column(Integer, nullable=True)
     # Have many Offers
     offers = relationship("Offer", order_by=Offer.id, back_populates="building")
