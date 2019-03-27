@@ -8,16 +8,16 @@ def try_extract_value(dic, path):
     return dv
 
 
-def convert(raw_data):
+def convert(raw_data: list):
     for e in raw_data:
         yield {
             "building": _building(e['building']),
-            "offer": _offer(e),
-            "photo": _photo(e)
+            # "offer": _offer(e),
+            # "photo": _photo(e)
         }
 
 
-def _offer(o):
+def _offer(o: dict) -> tuple:
     extract = try_extract_value
 
     if extract(o, "price.unitPerPart") == "SQUARE_METER":
@@ -58,10 +58,10 @@ def _offer(o):
     )
 
 
-def _building(b):
+def _building(b: dict) -> tuple:
     return (
         b['buildingId'],  # id
-        b['builtYear'],
+        b.get('builtYear'),
         b.get('builtQuarter'),
         b.get('siteId')
         # 'buildingState': 'UNFINISHED',
@@ -80,7 +80,7 @@ def _building(b):
     )
 
 
-def _photo(b):
+def _photo(b: dict) -> tuple:
     return (
         b['buildingId'],  # id
         b['builtYear'],

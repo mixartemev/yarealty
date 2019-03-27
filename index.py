@@ -53,8 +53,8 @@ def main():
         res = list(filter(lambda r: r['building'].get('buildingId'), res))
         for e in convert(res):
             session.merge(Building(*e['building']))
-            session.merge(Offer(*e['offer']))
-            session.merge(Photo(*e['photo']))
+            # session.merge(Offer(*e['offer']))
+            # session.merge(Photo(*e['photo']))
         # for ent in res:
         #     session.merge(Offer(
         #         ent['offerId'],
