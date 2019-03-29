@@ -1,5 +1,6 @@
 from models.site import Site
 from models.building import Building
+from models.offer import Offer
 from db import session
 from req import arguments as args, make as make_request
 from converter import convert
@@ -20,8 +21,10 @@ def main():
         for e in convert(res):
             if e['site']:
                 session.merge(Site(*e['site']))
-            session.merge(Building(*e['building']))
-            # session.merge(Offer(*e['offer']))
+            b = session.merge(Building(*e['building']))
+            session.commit()
+            o = (b.id,) + e['offer']
+            session.merge(Offer(*o))
             # session.merge(Photo(*e['photo']))
         # for ent in res:
         #     session.merge(Offer(

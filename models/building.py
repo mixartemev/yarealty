@@ -4,7 +4,7 @@ from models.offer import Offer
 
 class Building(Base):
     __tablename__ = 'buildings'
-    id = Column(BigInteger,  Sequence('building_id_seq'), primary_key=True)
+    id = Column(BigInteger, Sequence('building_id_seq'), primary_key=True, autoincrement=True)
     buildingId = Column(BigInteger, nullable=True, index=True, unique=True)
     builtYear = Column(SmallInteger)
     builtQuarter = Column(SmallInteger)
@@ -17,9 +17,9 @@ class Building(Base):
     # Have many Offers
     offers = relationship("Offer", order_by=Offer.id, back_populates="building")
 
-    def __init__(self, buildingId, built_year, built_quarter, building_state, building_type, site_id, house_id):
+    def __init__(self, building_id, built_year, built_quarter, building_state, building_type, site_id, house_id):
         # self.id = id
-        self.buildingId = buildingId
+        self.buildingId = building_id
         self.builtYear = built_year
         self.builtQuarter = built_quarter
         self.buildingState = building_state
