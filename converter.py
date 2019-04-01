@@ -11,8 +11,9 @@ def try_extract_value(dic, path):
 def convert(raw_data: list):
     for e in raw_data:
         yield {
+            "author": _author(e),
             "site": _site(e['building']),
-            "building": _building(e['building']),
+            "building": _building(e),
             "offer": _offer(e),
             # "photo": _photo(e)
         }
@@ -26,7 +27,8 @@ def _site(s: dict) -> tuple:
     ) if s.get('siteId') else None
 
 
-def _building(b: dict) -> tuple:
+def _building(o: dict) -> tuple:
+    b = o['building']
     return (
         b.get('buildingId'),  # id
         b.get('builtYear'),
@@ -35,10 +37,24 @@ def _building(b: dict) -> tuple:
         b.get('buildingType'),
         b.get('siteId'),
         b.get('houseId'),
+        o['floorsTotal'],
         # 'improvements': {'LIFT': True,
         # 'RUBBISH_CHUTE': True,
         # 'SECURITY': True},
         # 'heatingType': 'UNKNOWN',
+    )
+
+
+def _author(o: dict) -> tuple:
+    a = o['author']
+    return (
+        o.get('partnerId'),
+        o.get('partnerInternalId'),
+        o.get('partnerName'),
+        a.get('agentName'),
+        a.get('category'),
+        a['encryptedPhones'][0],
+        a['encryptedPhoneNumbers'][0]['redirectId'] if a['redirectPhones'] else None,
     )
 
 
@@ -68,8 +84,9 @@ def _offer(o: dict) -> tuple:
         extract(o, "livingSpace.value"),
         extract(o, "roomSpace.value"),
         extract(o, "kitchenSpace.value"),
-        extract(o, "author.id"),
-        # o['creationDate'],
+        extract(o, "partnerId"),
+        o['creationDate'],
+        o['description'],
         # o['offerType'],
         # o['description'],
         # # extract(o, 'appLargeImages'),

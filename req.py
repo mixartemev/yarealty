@@ -2,14 +2,14 @@ import argparse
 import requests
 
 API_URL = "https://realty.yandex.ru/gate/react-page/get/?rgid={0}&type={1}&category={2}&page={3}&_format=react" \
-          "&_pageType=search&_providers=react-search-data&pageSize=117"  # &searchType=newbuilding-search
+          "&_pageType=search&_providers=react-search-data&pageSize=37"  # &searchType=newbuilding-search
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--output_file', type=str, default='output/output.json', help='directory to save parsed data')
 parser.add_argument('--page_number', type=int, default=1, help='page number to start')
 parser.add_argument('--delay', type=float, default=3, help='delay between requests')
 parser.add_argument('--rgid', type=int, default=187, help='region id')
-parser.add_argument('--type', type=str, default="SELL", help='realty type')
+parser.add_argument('--type', type=str, default="RENT", help='realty type')
 parser.add_argument('--category', type=str, default="APARTMENT", help='realty category')
 arguments = parser.parse_args()
 

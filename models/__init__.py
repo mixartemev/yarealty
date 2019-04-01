@@ -1,10 +1,11 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, ForeignKey, Enum, Integer, BigInteger, SmallInteger, DECIMAL, String, Boolean, Sequence
+from sqlalchemy import Column, ForeignKey, Enum, Integer, BigInteger, SmallInteger, DECIMAL, String, Boolean, Sequence,\
+    Date
 from sqlalchemy.orm import relationship
 
 __version__ = '1.0'
 __all__ = ["Base", "Column", "ForeignKey", "Enum", "Integer", "BigInteger", "SmallInteger", "DECIMAL", "String",
-           "Boolean", "Sequence", "relationship"]
+           "Boolean", "Sequence", "relationship", "Date"]
 
 # Load Base class for declarative way tables operating
 Base = declarative_base()

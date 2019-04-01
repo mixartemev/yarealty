@@ -1,3 +1,4 @@
+from models.author import Author
 from models.site import Site
 from models.building import Building
 from models.offer import Offer
@@ -19,6 +20,7 @@ def main():
         res = result['response']['search']['offers']['entities']
         # res = list(filter(lambda r: r['building'].get('buildingId'), res))
         for e in convert(res):
+            session.merge(Author(*e['author']))
             if e['site']:
                 session.merge(Site(*e['site']))
             b = session.merge(Building(*e['building']))

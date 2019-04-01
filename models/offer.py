@@ -16,14 +16,17 @@ class Offer(Base):
     livingSpace = Column(DECIMAL(6, 2))
     roomSpace = Column(DECIMAL(6, 2))
     kitchenSpace = Column(DECIMAL(6, 2))
-    partnerId = Column(Integer)  # , ForeignKey('author.id'))
+    partnerId = Column(Integer, ForeignKey('author.id'))
+    creationDate = Column(Date)
+    description = Column(String)
     # Belongs to Building
     building = relationship("Building", back_populates="offers")
+    author = relationship("Author", back_populates="offers")
     # Have many Photos
     photos = relationship("Photo", order_by=Photo.id, back_populates="offer")
 
     def __init__(self, building_id, id, trust, active, rooms, price, price_m2, floor, area, living_space, room_space,
-                 kitchen_space, partner_id):
+                 kitchen_space, partner_id, creation_date, description):
         self.buildingId = building_id
         self.id = id
         self.trust = trust
@@ -37,3 +40,5 @@ class Offer(Base):
         self.roomSpace = room_space
         self.kitchenSpace = kitchen_space
         self.partnerId = partner_id
+        self.creationDate = creation_date
+        self.description = description
