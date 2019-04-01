@@ -1,5 +1,6 @@
 from models.author import Author
 from models.site import Site
+from models.newBuilding import NewBuilding
 from models.building import Building
 from models.offer import Offer
 from db import session
@@ -23,9 +24,14 @@ def main():
             session.merge(Author(*e['author']))
             if e['site']:
                 session.merge(Site(*e['site']))
-            b = session.merge(Building(*e['building']))
-            session.commit()
-            o = (b.id,) + e['offer']
+            if e['building']:
+                session.merge(Building(*e['building']))
+                nbid = None
+            else:
+                nb = session.merge(NewBuilding(*e['new_building']))
+                session.commit()  # todo it's working now only for new buildings autoinc IDs
+                nbid = nb.id
+            o = (nbid,) + e['offer']
             session.merge(Offer(*o))
             # session.merge(Photo(*e['photo']))
         # for ent in res:

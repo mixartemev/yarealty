@@ -14,6 +14,7 @@ def convert(raw_data: list):
             "author": _author(e),
             "site": _site(e['building']),
             "building": _building(e),
+            "new_building": _new_building(e),
             "offer": _offer(e),
             # "photo": _photo(e)
         }
@@ -30,7 +31,20 @@ def _site(s: dict) -> tuple:
 def _building(o: dict) -> tuple:
     b = o['building']
     return (
-        b.get('buildingId'),  # id
+        b['buildingId'],
+        b.get('builtYear'),
+        b.get('buildingType'),
+        o['floorsTotal'],
+        # 'improvements': {'LIFT': True,
+        # 'RUBBISH_CHUTE': True,
+        # 'SECURITY': True},
+        # 'heatingType': 'UNKNOWN',
+    ) if b.get('buildingId') else False
+
+
+def _new_building(o: dict) -> tuple:
+    b = o['building']
+    return (
         b.get('builtYear'),
         b.get('builtQuarter'),
         b.get('buildingState'),
@@ -42,7 +56,7 @@ def _building(o: dict) -> tuple:
         # 'RUBBISH_CHUTE': True,
         # 'SECURITY': True},
         # 'heatingType': 'UNKNOWN',
-    )
+    ) if not bool(b.get('buildingId')) else False
 
 
 def _author(o: dict) -> tuple:
@@ -72,7 +86,12 @@ def _offer(o: dict) -> tuple:
     else:
         floor = None
 
+    room_spaces = []
+    if o.get('roomSpace'):
+        for room_space in o.get('roomSpace'):
+            room_spaces.append(room_space['value'])
     return (
+        o['building'].get('buildingId'),
         o['offerId'],
         o['trust'],
         o['active'],
@@ -82,11 +101,11 @@ def _offer(o: dict) -> tuple:
         floor,
         o['area']['value'],
         extract(o, "livingSpace.value"),
-        extract(o, "roomSpace.value"),
+        room_spaces or None,
         extract(o, "kitchenSpace.value"),
         extract(o, "partnerId"),
         o['creationDate'],
-        o['description'],
+        o.get('description'),
         # o['offerType'],
         # o['description'],
         # # extract(o, 'appLargeImages'),

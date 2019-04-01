@@ -1,5 +1,5 @@
 from models import *
-from models.building import Building
+from models.newBuilding import NewBuilding
 
 
 class Site(Base):
@@ -8,9 +8,9 @@ class Site(Base):
     name = Column(String)
     displayName = Column(String)
     # Have many Buildings
-    buildings = relationship("Building", order_by=Building.id, back_populates="site")
+    newBuildings = relationship("NewBuilding", order_by=NewBuilding.id, back_populates="site")
 
-    def __init__(self, id, name, displayName):
+    def __init__(self, id, name, display_name):
         self.id = id
         self.name = name
-        self.displayName = displayName
+        self.displayName = display_name
