@@ -1,0 +1,581 @@
+[
+          {
+            "offerId": "5535697046791116268",
+            "trust": "NORMAL",
+            "url": "//realty.yandex.ru/offer/5535697046791116268",
+            ---"unsignedInternalUrl": "//realty.yandex.ru/offer/5535697046791116268",
+            ---"partnerId": "1069148935",
+            "partnerName": "Блондинка.ру Невский 1069148935",
+            "offerType": "SELL",
+            "offerCategory": "APARTMENT",
+            ---"clusterId": "5535697046791116268",
+            ---"clusterHeader": true,
+            ---"clusterSize": 1,
+            ---"author": {
+              "id": "0",
+              "category": "AGENCY",
+              "organization": "Концерн КРОСТ: ЖК Невский",
+              "agentName": "Менеджер",
+              "partnerSaleAgentId": "205",
+              "name": "Концерн КРОСТ: ЖК Невский",
+              ---"redirectPhones": true,
+              ---"redirectPhonesFailed": false,
+              ---"encryptedPhoneNumbers": [
+                {
+                  "phone": "KzcF0OHTUJ5MLjgN3MPDgR5",
+                  "redirectId": "uVUuJiTW24w"
+                }
+              ],
+              "encryptedPhones": [
+                "KzcF0OHTUJ5MLjgN3MPDgR5"
+              ]
+            },
+            "creationDate": "2019-01-27T23:22:05Z",
+            "updateDate": "2019-03-05T09:12:40Z",
+            "roomsTotal": 1,
+            "floorsTotal": 21,
+            "floorsOffered": [
+              9
+            ],
+            ---"flatType": "NEW_FLAT",
+            "area": {
+              "value": 30,
+              "unit": "SQUARE_METER"
+            },
+            "livingSpace": {
+              "value": 17,
+              "unit": "SQUARE_METER"
+            },
+            "kitchenSpace": {
+              "value": 6,
+              "unit": "SQUARE_METER"
+            },
+            "price": {
+              "currency": "RUR",
+              "value": 6244513,
+              "period": "WHOLE_LIFE",
+              "unit": "WHOLE_OFFER",
+              "trend": "INCREASED",
+              "previous": 6062634,
+              "hasPriceHistory": true,
+              "valuePerPart": 208150,
+              "unitPerPart": "SQUARE_METER",
+              "valueForWhole": 6244513,
+              "unitForWhole": "WHOLE_OFFER"
+            },
+            ---"notForAgents": false,
+            "totalImages": 7,
+            ---"minicardImages": [
+              "//avatars.mds.yandex.net/get-realty/475683/offer.5176935471510653570.2203359131316234933/minicard",
+              "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/minicard",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510719880.840623163926387179/minicard",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510632457.2365294577432629053/minicard",
+              "//avatars.mds.yandex.net/get-realty/1075097/offer.5176935471510632484.4149855915193448626/minicard",
+              "//avatars.mds.yandex.net/get-realty/1632446/offer.5176935471510653382.265825785656964866/minicard",
+              "//avatars.mds.yandex.net/get-realty/1514059/offer.5176935471510632520.5174572340193871364/minicard"
+            ],
+            ---"mainImages": [
+              "//avatars.mds.yandex.net/get-realty/475683/offer.5176935471510653570.2203359131316234933/main",
+              "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/main",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510719880.840623163926387179/main",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510632457.2365294577432629053/main",
+              "//avatars.mds.yandex.net/get-realty/1075097/offer.5176935471510632484.4149855915193448626/main",
+              "//avatars.mds.yandex.net/get-realty/1632446/offer.5176935471510653382.265825785656964866/main",
+              "//avatars.mds.yandex.net/get-realty/1514059/offer.5176935471510632520.5174572340193871364/main"
+            ],
+            ---"fullImages": [
+              "//avatars.mds.yandex.net/get-realty/475683/offer.5176935471510653570.2203359131316234933/large",
+              "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/large",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510719880.840623163926387179/large",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510632457.2365294577432629053/large",
+              "//avatars.mds.yandex.net/get-realty/1075097/offer.5176935471510632484.4149855915193448626/large",
+              "//avatars.mds.yandex.net/get-realty/1632446/offer.5176935471510653382.265825785656964866/large",
+              "//avatars.mds.yandex.net/get-realty/1514059/offer.5176935471510632520.5174572340193871364/large"
+            ],
+            ---"alikeImages": [
+              "//avatars.mds.yandex.net/get-realty/475683/offer.5176935471510653570.2203359131316234933/alike",
+              "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/alike",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510719880.840623163926387179/alike",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510632457.2365294577432629053/alike",
+              "//avatars.mds.yandex.net/get-realty/1075097/offer.5176935471510632484.4149855915193448626/alike",
+              "//avatars.mds.yandex.net/get-realty/1632446/offer.5176935471510653382.265825785656964866/alike",
+              "//avatars.mds.yandex.net/get-realty/1514059/offer.5176935471510632520.5174572340193871364/alike"
+            ],
+            ---"cosmicImages": [
+              "//avatars.mds.yandex.net/get-realty/475683/offer.5176935471510653570.2203359131316234933/cosmic",
+              "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/cosmic",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510719880.840623163926387179/cosmic",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510632457.2365294577432629053/cosmic",
+              "//avatars.mds.yandex.net/get-realty/1075097/offer.5176935471510632484.4149855915193448626/cosmic",
+              "//avatars.mds.yandex.net/get-realty/1632446/offer.5176935471510653382.265825785656964866/cosmic",
+              "//avatars.mds.yandex.net/get-realty/1514059/offer.5176935471510632520.5174572340193871364/cosmic"
+            ],
+            ---"appMiddleImages": [
+              "//avatars.mds.yandex.net/get-realty/475683/offer.5176935471510653570.2203359131316234933/app_middle",
+              "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/app_middle",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510719880.840623163926387179/app_middle",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510632457.2365294577432629053/app_middle",
+              "//avatars.mds.yandex.net/get-realty/1075097/offer.5176935471510632484.4149855915193448626/app_middle",
+              "//avatars.mds.yandex.net/get-realty/1632446/offer.5176935471510653382.265825785656964866/app_middle",
+              "//avatars.mds.yandex.net/get-realty/1514059/offer.5176935471510632520.5174572340193871364/app_middle"
+            ],
+            "appLargeImages": [
+              "//avatars.mds.yandex.net/get-realty/475683/offer.5176935471510653570.2203359131316234933/app_large",
+              "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/app_large",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510719880.840623163926387179/app_large",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510632457.2365294577432629053/app_large",
+              "//avatars.mds.yandex.net/get-realty/1075097/offer.5176935471510632484.4149855915193448626/app_large",
+              "//avatars.mds.yandex.net/get-realty/1632446/offer.5176935471510653382.265825785656964866/app_large",
+              "//avatars.mds.yandex.net/get-realty/1514059/offer.5176935471510632520.5174572340193871364/app_large"
+            ],
+            ---"appMiniSnippetImages": [
+              "//avatars.mds.yandex.net/get-realty/475683/offer.5176935471510653570.2203359131316234933/app_snippet_mini",
+              "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/app_snippet_mini",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510719880.840623163926387179/app_snippet_mini",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510632457.2365294577432629053/app_snippet_mini",
+              "//avatars.mds.yandex.net/get-realty/1075097/offer.5176935471510632484.4149855915193448626/app_snippet_mini",
+              "//avatars.mds.yandex.net/get-realty/1632446/offer.5176935471510653382.265825785656964866/app_snippet_mini",
+              "//avatars.mds.yandex.net/get-realty/1514059/offer.5176935471510632520.5174572340193871364/app_snippet_mini"
+            ],
+            ---"appSmallSnippetImages": [
+              "//avatars.mds.yandex.net/get-realty/475683/offer.5176935471510653570.2203359131316234933/app_snippet_small",
+              "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/app_snippet_small",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510719880.840623163926387179/app_snippet_small",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510632457.2365294577432629053/app_snippet_small",
+              "//avatars.mds.yandex.net/get-realty/1075097/offer.5176935471510632484.4149855915193448626/app_snippet_small",
+              "//avatars.mds.yandex.net/get-realty/1632446/offer.5176935471510653382.265825785656964866/app_snippet_small",
+              "//avatars.mds.yandex.net/get-realty/1514059/offer.5176935471510632520.5174572340193871364/app_snippet_small"
+            ],
+            ---"appMiddleSnippetImages": [
+              "//avatars.mds.yandex.net/get-realty/475683/offer.5176935471510653570.2203359131316234933/app_snippet_middle",
+              "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/app_snippet_middle",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510719880.840623163926387179/app_snippet_middle",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510632457.2365294577432629053/app_snippet_middle",
+              "//avatars.mds.yandex.net/get-realty/1075097/offer.5176935471510632484.4149855915193448626/app_snippet_middle",
+              "//avatars.mds.yandex.net/get-realty/1632446/offer.5176935471510653382.265825785656964866/app_snippet_middle",
+              "//avatars.mds.yandex.net/get-realty/1514059/offer.5176935471510632520.5174572340193871364/app_snippet_middle"
+            ],
+            ---"appLargeSnippetImages": [
+              "//avatars.mds.yandex.net/get-realty/475683/offer.5176935471510653570.2203359131316234933/app_snippet_large",
+              "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/app_snippet_large",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510719880.840623163926387179/app_snippet_large",
+              "//avatars.mds.yandex.net/get-realty/1623621/offer.5176935471510632457.2365294577432629053/app_snippet_large",
+              "//avatars.mds.yandex.net/get-realty/1075097/offer.5176935471510632484.4149855915193448626/app_snippet_large",
+              "//avatars.mds.yandex.net/get-realty/1632446/offer.5176935471510653382.265825785656964866/app_snippet_large",
+              "//avatars.mds.yandex.net/get-realty/1514059/offer.5176935471510632520.5174572340193871364/app_snippet_large"
+            ],
+            "apartment": {
+              "renovation": "PRIME_RENOVATION"
+            },
+            "location": {
+              "rgid": 193290,
+              "geoId": 213,
+              "subjectFederationId": 1,
+              "settlementRgid": 165705,
+              "settlementGeoId": 213,
+              "address": "Москва, улица Адмирала Макарова, вл6к3",
+              "geocoderAddress": "Россия, Москва, улица Адмирала Макарова, вл6к3",
+              "point": {
+                "latitude": 55.8357,
+                "longitude": 37.491726,
+                ---"precision": "EXACT"
+              },
+              "metro": {
+                "metroGeoId": 20370,
+                "name": "Водный Стадион",
+                "metroTransport": "ON_FOOT",
+                "timeToMetro": 9,
+                "latitude": 55.839836,
+                "longitude": 37.48673,
+                "minTimeToMetro": 9,
+                "rgbColor": "4f8242"
+              },
+              "streetAddress": "улица Адмирала Макарова, вл6к3",
+              "metroList": [
+                {
+                  "metroGeoId": 20370,
+                  "name": "Водный Стадион",
+                  "metroTransport": "ON_FOOT",
+                  "timeToMetro": 9,
+                  "latitude": 55.839836,
+                  "longitude": 37.48673,
+                  "minTimeToMetro": 9,
+                  "rgbColor": "4f8242"
+                },
+                {
+                  "metroGeoId": 20369,
+                  "name": "Речной Вокзал",
+                  "metroTransport": "ON_TRANSPORT",
+                  "timeToMetro": 14,
+                  "latitude": 55.854893,
+                  "longitude": 37.476234,
+                  "minTimeToMetro": 14,
+                  "rgbColor": "4f8242"
+                },
+                {
+                  "metroGeoId": 20371,
+                  "name": "Войковская",
+                  "metroTransport": "ON_TRANSPORT",
+                  "timeToMetro": 15,
+                  "latitude": 55.818928,
+                  "longitude": 37.497795,
+                  "minTimeToMetro": 15,
+                  "rgbColor": "4f8242"
+                }
+              ],
+              "parks": [
+                {
+                  "parkId": "827348",
+                  "name": "Парк Невский",
+                  "timeOnFoot": 474,
+                  "distanceOnFoot": 658,
+                  "latitude": 55.835117,
+                  "longitude": 37.49561,
+                  "timeDistanceList": [
+                    {
+                      "transport": "ON_FOOT",
+                      "time": 7,
+                      "distance": 658
+                    }
+                  ]
+                }
+              ],
+              "ponds": [
+                {
+                  "pondId": "810828",
+                  "name": "Головинский канал",
+                  "timeOnFoot": 240,
+                  "distanceOnFoot": 336,
+                  "latitude": 55.835228,
+                  "longitude": 37.496964,
+                  "timeDistanceList": [
+                    {
+                      "transport": "ON_FOOT",
+                      "time": 4,
+                      "distance": 336
+                    }
+                  ]
+                },
+                {
+                  "pondId": "1584399",
+                  "name": "Химкинское водохранилище",
+                  "timeOnFoot": 859,
+                  "distanceOnFoot": 1193,
+                  "latitude": 55.833717,
+                  "longitude": 37.482933,
+                  "timeDistanceList": [
+                    {
+                      "transport": "ON_FOOT",
+                      "time": 14,
+                      "distance": 1193
+                    }
+                  ]
+                }
+              ],
+              "airports": [
+                {
+                  "id": "878042",
+                  "name": "Шереметьево",
+                  "timeOnCar": 1103,
+                  "distanceOnCar": 17464,
+                  "latitude": 55.963852,
+                  "longitude": 37.4169,
+                  "timeDistanceList": [
+                    {
+                      "transport": "ON_CAR",
+                      "time": 18,
+                      "distance": 17464
+                    }
+                  ]
+                },
+                {
+                  "id": "878065",
+                  "name": "Внуково",
+                  "timeOnCar": 2752,
+                  "distanceOnCar": 50106,
+                  "latitude": 55.604942,
+                  "longitude": 37.282578,
+                  "timeDistanceList": [
+                    {
+                      "transport": "ON_CAR",
+                      "time": 45,
+                      "distance": 50106
+                    }
+                  ]
+                },
+                {
+                  "id": "878109",
+                  "name": "Жуковский (Раменское)",
+                  "timeOnCar": 3961,
+                  "distanceOnCar": 62116,
+                  "latitude": 55.568665,
+                  "longitude": 38.143654,
+                  "timeDistanceList": [
+                    {
+                      "transport": "ON_CAR",
+                      "time": 66,
+                      "distance": 62116
+                    }
+                  ]
+                },
+                {
+                  "id": "858742",
+                  "name": "Домодедово",
+                  "timeOnCar": 4069,
+                  "distanceOnCar": 61541,
+                  "latitude": 55.41435,
+                  "longitude": 37.90048,
+                  "timeDistanceList": [
+                    {
+                      "transport": "ON_CAR",
+                      "time": 67,
+                      "distance": 61541
+                    }
+                  ]
+                }
+              ],
+              "heatmaps": [
+                {
+                  "name": "transport",
+                  ---"rgbColor": "9ada1b",
+                  "description": "выше средней",
+                  "level": 5,
+                  "maxLevel": 8,
+                  "title": "Транспортная доступность"
+                },
+                {
+                  "name": "infrastructure",
+                  ---"rgbColor": "f69420",
+                  "description": "есть не всё",
+                  "level": 2,
+                  "maxLevel": 3,
+                  "title": "Инфраструктура"
+                },
+                {
+                  "name": "ecology",
+                  ---"rgbColor": "fbae1e",
+                  "description": "среднее",
+                  "level": 4,
+                  "maxLevel": 9,
+                  "title": "Качество воздуха"
+                }
+              ],
+              "allHeatmaps": [
+                {
+                  "name": "transport",
+                  ---"rgbColor": "9ada1b",
+                  "description": "выше средней",
+                  "level": 5,
+                  "maxLevel": 8,
+                  "title": "Транспортная доступность"
+                },
+                {
+                  "name": "infrastructure",
+                  ---"rgbColor": "f69420",
+                  "description": "есть не всё",
+                  "level": 2,
+                  "maxLevel": 3,
+                  "title": "Инфраструктура"
+                },
+                {
+                  "name": "ecology",
+                  ---"rgbColor": "fbae1e",
+                  "description": "среднее",
+                  "level": 4,
+                  "maxLevel": 9,
+                  "title": "Качество воздуха"
+                },
+                {
+                  "name": "price-sell",
+                  ---"rgbColor": "ffe424",
+                  "description": "выше средней",
+                  "level": 5,
+                  "maxLevel": 9,
+                  "title": "Стоимость продажи"
+                },
+                {
+                  "name": "price-rent",
+                  ---"rgbColor": "fbae1e",
+                  "description": "высокая",
+                  "level": 4,
+                  "maxLevel": 9,
+                  "title": "Стоимость аренды"
+                },
+                {
+                  "name": "profitability",
+                  ---"rgbColor": "20a70a",
+                  "description": "очень низкая",
+                  "level": 8,
+                  "maxLevel": 9,
+                  "title": "Индекс рентабельности"
+                }
+              ],
+              "cityCenter": [
+                {
+                  ---"transport": "ON_CAR",
+                  ---"time": 1336,
+                  ---"distance": 16142,
+                  ---"latitude": 55.753716,
+                  ---"longitude": 37.615364,
+                  ---"timeDistanceList": [
+                    {
+                      "transport": "ON_CAR",
+                      "time": 22,
+                      ---"distance": 16142
+                    }
+                  ]
+                }
+              ]
+            },
+            "house": {
+              "apartments": true,
+              "housePart": false
+            },
+            "building": {
+              "builtYear": 2020,
+              "builtQuarter": 3,
+              "buildingState": "UNFINISHED",
+              "buildingType": "BRICK",
+              "siteId": 162219,
+              "siteName": "Невский",
+              "siteDisplayName": "ЖК «Невский»",
+              "houseId": "401340",
+              "heatingType": "UNKNOWN"
+            },
+            ---"description": "Номер квартиры: 101. Продается 1-к квартира на 9 этаже 21 этажного дома в жилом комплексе премиум-класса «Невский». Комплекс расположен в 5 мин от м. «Водный стадион» и МЦК «Балтийская», вблизи от ТТК и Ленинградского шоссе. ЖК «Невский» это",
+            ---"internal": true,
+            "active": true,
+            ---"vas": {
+              "raised": false,
+              "premium": true,
+              "placement": false,
+              "promoted": false,
+              "turboSale": false,
+              "raisingSale": false,
+              "campaignType": "PREMIUM",
+              "vasAvailable": true
+            },
+            "salesDepartments": [
+              {
+                "id": 940102,
+                "name": "КРОСТ",
+                "isRedirectPhones": false,
+                "weekTimetable": [
+                  {
+                    "dayFrom": 1,
+                    "dayTo": 7,
+                    "timePattern": [
+                      {
+                        "open": "09:00",
+                        "close": "21:00"
+                      }
+                    ]
+                  }
+                ],
+                "logo": "//avatars.mds.yandex.net/get-realty/1548823/company.940102.1544692028963385289/builder_logo_info",
+                "phonesWithTag": [
+                  {
+                    "tag": "",
+                    "phone": "+74957845157"
+                  },
+                  {
+                    "tag": "offer-card",
+                    "phone": "+74957848732"
+                  }
+                ],
+                ---"encryptedPhones": [
+                  "KzcF0OHTUJ3OLDQN1MPTUR3"
+                ],
+                ---"encryptedDump": "LvkgzmfLVAl0qYvmQwYFXvE03kCFkzgRxyb/Z5REfimDPjo52kKmvy6b4bQADMtQh+/P7gSbLWh9UYnjYYW+nPxUAzWkGhzj5XlXM3+ZdFZ2p91eiHBvSEPax3Y8qZqYiACum7wtbvSwg6eFIf3fn0zZl0bF66hsC1SKtUKufO6iV0wslWpfiwxySXTHd/tYhbUV7RB+r54UHxpJ3VOfdd4X0Tca335IhT4Dv2kO2wjeQ8sAFSvIsyN6AIeMlw1uNiNWur3uKmo6SJ7vrwQr6LBPvzotHTw06HMNTX6HFFaB8hcHUo9QAse2U1XWY94Np5dIHo59SwmMYNRXtZugBBcx2SpAlcEOu77wgj/S0jzKDp+VPx1TECFf+Slo+tv3skElnjSiGI/p2SC4jYUC76e12Zsl2EndNQNR3vslv8E0qvKeFaRJM/MDLBY8loPunqAbxCZorG+NEGD8DvVSw5+96SePsX9CkQRnObp+nqgU+ypqNbCSFQLTXxhuQRx23h6ryKHsdDq6CvTZdhytbL+dG+Dv+c8soZE+vsM8iT2vChF2pN2bTGuM1+1mxE86YrYF7GjuE7bJ8JC8VwTWo7DSwmrJCYunpOe4ui8WXOAWAeHNOcIiBO5HUNtHAwjVAuJGtxTaxYSgx3damHCN2qqn4ZAf5NVpY6xq3cosubankOnBiGO9MzAXAlsQjthT8BcPfmy6LrwTdk2qBtwGGXLO9r88rNu1wisCSKn8oj4Hpm9nxNpL9p7Jm848S7A1BoMAWEsFSyrmRmX8QBFRZwp0uDaO3lE7kTLhgUrv+iVS5IhvCvajp+51BRpjd5Tbx4DwPNF+MP4skYUNvUSnd4kvQha35FYfR44nEJsRaqN1W0Q/pBqBAUb8/ALW1Ch9CZtUPy03J+Ex6Gfug+YfU7WbmVOVzRFbAw=="
+              }
+            ],
+            ---"uid": "481858874",
+            ---"relevance": 1180843,
+            ---"commissioningDateIndexValue": 20203,
+            "extImages": {
+              "IMAGE_PLAN": {
+                "totalImages": 1,
+                ---"minicardImages": [
+                  "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/minicard"
+                ],
+                ---"mainImages": [
+                  "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/main"
+                ],
+                ---"fullImages": [
+                  "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/large"
+                ],
+                ---"alikeImages": [
+                  "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/alike"
+                ],
+                ---"cosmicImages": [
+                  "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/cosmic"
+                ],
+                ----"appMiddleImages": [
+                  "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/app_middle"
+                ],
+                "appLargeImages": [
+                  "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/app_large"
+                ],
+                ---"appMiniSnippetImages": [
+                  "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/app_snippet_mini"
+                ],
+                ---"appSmallSnippetImages": [
+                  "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/app_snippet_small"
+                ],
+                ---"appMiddleSnippetImages": [
+                  "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/app_snippet_middle"
+                ],
+                ---"appLargeSnippetImages": [
+                  "//avatars.mds.yandex.net/get-realty/1060906/offer.5535697046791116268.5096449262247824484/app_snippet_large"
+                ]
+              }
+            },
+            ---"verified": false,
+            ---"partnerInternalId": "103248",
+            ---"xmlBestVas": "PREMIUM",
+            ---"callCenter": false,
+            "tags": [
+              {
+                "id": "1794384",
+                "title": "сад"
+              },
+              {
+                "id": "1794553",
+                "title": "спорт"
+              },
+              {
+                "id": "1794459",
+                "title": "жилой комплекс"
+              },
+              {
+                "id": "1794425",
+                "title": "торг"
+              },
+              {
+                "id": "1794326",
+                "title": "парк"
+              },
+              {
+                "id": "1794473",
+                "title": "дизайн"
+              }
+            ],
+           --- "exclusive": true,
+            ---"raised": false,
+           --- "premium": true,
+           --- "vasAvailable": true,
+            ---"newBuilding": true,
+            ---"primarySaleV2": true,
+            ---"openPlan": false,
+            ---"canSearchOffer": true,
+            ---"verifiedByYandex": false,
+            ---"suspicious": false,
+            "transactionConditionsMap": {
+              "MORTGAGE": true
+            },
+            ---"placement": false,
+            ---"promoted": false,
+            "roomsTotalKey": "1",
+            ---"roomsTotalColor": "#4a85f2"
+          }
+  ]
