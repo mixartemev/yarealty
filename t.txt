@@ -1,0 +1,22 @@
+https://geocode-maps.yandex.ru/1.x?geocode=
+
+https://api.tinkoff.ru/inhouse/mortgage/realty/available_cities
+[
+"Москва",
+"Москва и МО",
+"Санкт-Петербург",
+"Санкт-Петербург и ЛО",
+"Калуга и Калужская область",
+"Ростов-на-Дону и Ростовская область",
+"Ярославль и Ярославская область",
+"Новороссийск",
+"Екатеринбург и Свердловская область",
+"Тюмень и Тюменская область"
+]
+
+POST https://api.tinkoff.ru/inhouse/mortgage/realty/find_summary_living_complexes
+{
+additionalFilter: {}
+commonFilter: {city: "Москва и МО"}
+pagingInfo: {mainPaging: {offset: 0, elemOnPage: 15}, alternativePaging: {offset: 0, elemOnPage: 15}}
+}
