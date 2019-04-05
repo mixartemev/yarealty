@@ -1,0 +1,9 @@
+# developers
+https://offers-service.domclick.ru/research/v1/offers/complexes/developers/search/?ne=70.75950697756102%2C157.18129181249995&sw=23.457040627933885%2C5.3062918124999605
+
+# complexes
+https://offers-service.domclick.ru/research/v1/offers/?deal_type=sale&ne=70.75950697756102%2C157.18129181249995&offer_type=complex&sw=23.457040627933885%2C5.3062918124999605&sort=published&sort_dir=desc&offset=4400&limit=100
+# complex info
+https://offers-service.domclick.ru/research/v1/offers/complexes/2642
+# flats in complex
+https://offers-service.domclick.ru/research/v1/offers/complexes/2642/flats/?limit=100&offset=0
