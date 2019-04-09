@@ -33,9 +33,10 @@ def load_helper(uri):
 
 
 def get_number(tr):
-    numberItem = int(tr.find("span").get_text()[:-1])
-    if print_result: print(numberItem)
-    return numberItem
+    number_item = int(tr.find("span").get_text()[:-1])
+    if print_result:
+        print(number_item)
+    return number_item
 
 
 def get_metro_station(tr):
@@ -47,9 +48,9 @@ def get_metro_station(tr):
 
 
 def get_metro_distance(tr):
-    walk_type = u'пешком'
+    # walk_type = u'пешком'
     metro_distance = tr.find("span", attrs={'class': re.compile('objects_item_metro_comment')}).get_text()
-    metro_distance_minute = re.search('\d+', metro_distance).group()
+    metro_distance_minute = re.search(r'\d+', metro_distance).group()
     metro_distance_walk = re.search(u'пешком', metro_distance)
     metro_distance_car = re.search(u'на машине', metro_distance)
 
@@ -63,12 +64,14 @@ def get_metro_distance(tr):
     else:
         print("error with distance to metro")
         print(metro_distance)
+        on_car = None
     distance_to_metro = str(metro_distance_minute) + " мин. " + distance_type
     if on_car:
         distance_to_metro_universal = int(metro_distance_minute) * 5
     else:
         distance_to_metro_universal = int(metro_distance_minute)
-    if print_result: print(distance_to_metro)
+    if print_result:
+        print(distance_to_metro)
     return distance_to_metro_universal
 
 
@@ -76,111 +79,118 @@ def get_address(tr):
     address = ""
     for addressField in tr.find_all("div", attrs={'class': 'objects_item_addr'}):
         address += addressField.get_text().strip() + " "
-    if print_result: print(address)
+    if print_result:
+        print(address)
     return address
 
 
 def get_rooms(tr):
     how_many_rooms = tr.find("div", attrs={'class': 'objects_item_info_col_2'}).find("strong").get_text()
-    if print_result: print(how_many_rooms)
+    if print_result:
+        print(how_many_rooms)
     return how_many_rooms
 
 
 def get_price_roubles(tr):
     print(tr)
     price_roubles = tr.find("div", attrs={'class': 'objects_item_price'}).get_text()
-    price_roubles_digit = re.findall('\d+', price_roubles.strip())
+    price_roubles_digit = re.findall(r'\d+', price_roubles.strip())
     price_roubles = ""
     for i in price_roubles_digit:
         price_roubles += i
     price_roubles = int(price_roubles)
-    if print_result: print("стоимость в рублях:" + str(price_roubles))
+    if print_result:
+        print("стоимость в рублях:" + str(price_roubles))
     return price_roubles
 
 
 def get_square_all(tr):
     print(tr)
     td = tr.find("div", attrs={'class': 'objects_item_info_col_3'}).find_all("td")
-    mainSize = 0
+    main_size = 0
     for square in td:
-        main = re.search(u'Общая: \d+ м', square.get_text())
-        if main != None:
-            mainSize = re.search('\d+', main.group())
-            mainSize = mainSize.group()
-            if print_result: print("Общая:" + str(mainSize))
+        main = re.search(r'Общая: \d+ м', square.get_text())
+        if main is not None:
+            main_size = re.search(r'\d+', main.group())
+            main_size = main_size.group()
+            if print_result: print("Общая:" + str(main_size))
 
-    return int(mainSize)
+    return int(main_size)
 
 
 def get_square_kitchen(tr):
     td = tr.find("td", attrs={'class': 'objects_item_info_col_3'}).find_all("td")
-    kitchenSize = 0
+    kitchen_size = 0
     for square in td:
-        kitchen = re.search(u'Кухня: \d+ м', square.get_text())
-        if kitchen != None:
-            kitchenSize = re.search('\d+', kitchen.group())
-            kitchenSize = kitchenSize.group()
-            if print_result: print("Кухня:" + str(kitchenSize))
-    return int(kitchenSize)
+        kitchen = re.search(r'Кухня: \d+ м', square.get_text())
+        if kitchen is not None:
+            kitchen_size = re.search(r'\d+', kitchen.group())
+            kitchen_size = kitchen_size.group()
+            if print_result: print("Кухня:" + str(kitchen_size))
+    return int(kitchen_size)
 
 
 def get_square_live(tr):
     td = tr.find("td", attrs={'class': 'objects_item_info_col_3'}).find_all("td")
-    liveSize = 0
+    live_size = 0
     for square in td:
-        live = re.search(u'Жилая: \d+ м', square.get_text())
-        if live != None:
-            liveSize = re.search('\d+', live.group())
-            liveSize = liveSize.group()
-            if print_result: print("Жилая:" + str(liveSize))
-    return int(liveSize)
+        live = re.search(r'Жилая: \d+ м', square.get_text())
+        if live is not None:
+            live_size = re.search(r'\d+', live.group())
+            live_size = live_size.group()
+            if print_result:
+                print("Жилая:" + str(live_size))
+    return int(live_size)
 
 
 def get_price_per_meter(tr):
     td = tr.find("td", attrs={'class': 'objects_item_info_col_4'})
-    pricePerMeter = td.find('div', attrs={'style': 'color:green;'})
-    pricePerMeter = pricePerMeter.get_text().strip()[3:]
-    pricePerMeterDigit = re.findall('\d+', pricePerMeter)
-    pricePerMeter = ""
-    for i in pricePerMeterDigit:
-        pricePerMeter += i
-    pricePerMeter = int(pricePerMeter)
-    if print_result: print("цена в рублях за метр^2:" + str(pricePerMeter))
-    return pricePerMeter
+    price_per_meter = td.find('div', attrs={'style': 'color:green;'})
+    price_per_meter = price_per_meter.get_text().strip()[3:]
+    price_per_meter_digit = re.findall(r'\d+', price_per_meter)
+    price_per_meter = ""
+    for i in price_per_meter_digit:
+        price_per_meter += i
+    price_per_meter = int(price_per_meter)
+    if print_result:
+        print("цена в рублях за метр^2:" + str(price_per_meter))
+    return price_per_meter
 
 
 def get_building_type(tr):
     td = tr.find("td", attrs={'class': 'objects_item_info_col_5'})
-    houseType = td.find('div', attrs={'class': 'objects_item_info_col_w'}).get_text()
-    houseTypeStr = re.search(u'[-а-яА-Я]+', houseType)
-    houseType = str(houseTypeStr.group().encode('utf-8')).strip()
-    if print_result: print(houseType)
-    return houseType
+    house_type = td.find('div', attrs={'class': 'objects_item_info_col_w'}).get_text()
+    house_type_str = re.search(u'[-а-яА-Я]+', house_type)
+    house_type = str(house_type_str.group().encode('utf-8')).strip()
+    if print_result:
+        print(house_type)
+    return house_type
 
 
 def get_floor(tr):
     td = tr.find("td", attrs={'class': 'objects_item_info_col_5'})
     floor = td.find('div', attrs={'class': 'objects_item_info_col_w'}).get_text()
-    floorInfo = re.search('\d+/*\d*', floor)
-    floor = str(floorInfo.group()).split('/')[0]
-    if len(str(floorInfo.group()).split('/')) > 1:
-        floorAll = str(floorInfo.group()).split('/')[1]
+    floor_info = re.search(r'\d+/*\d*', floor)
+    floor = str(floor_info.group()).split('/')[0]
+    if len(str(floor_info.group()).split('/')) > 1:
+        floor_all = str(floor_info.group()).split('/')[1]
     floor = int(floor)
-    if print_result: print("Этаж: " + str(floor))
+    if print_result:
+        print("Этаж: " + str(floor))
     return floor
 
 
 def get_floor_all(tr):
     td = tr.find("td", attrs={'class': 'objects_item_info_col_5'})
     floor = td.find('div', attrs={'class': 'objects_item_info_col_w'}).get_text()
-    floorAll = 0
-    floorInfo = re.search('\d+/*\d*', floor)
-    floor = str(floorInfo.group()).split('/')[0]
-    if len(str(floorInfo.group()).split('/')) > 1:
-        floorAll = str(floorInfo.group()).split('/')[1]
-    floorAll = int(floorAll)
-    if print_result and floorAll: print("Этажность:" + str(floorAll))
-    return floorAll
+    floor_all = 0
+    floor_info = re.search(r'\d+/*\d*', floor)
+    floor = str(floor_info.group()).split('/')[0]
+    if len(str(floor_info.group()).split('/')) > 1:
+        floor_all = str(floor_info.group()).split('/')[1]
+    floor_all = int(floor_all)
+    if print_result and floor_all: print("Этажность:" + str(floor_all))
+    return floor_all
 
 
 def get_additional_properties(tr):
@@ -188,44 +198,49 @@ def get_additional_properties(tr):
     td = td.find("table", attrs={'class': 'objects_item_details'})
     td = td.find_all("td")
     lift = td[0]
-    liftExist = re.search('\d+', str(lift))
-    if liftExist == None:
+    lift_exist = re.search(r'\d+', str(lift))
+    if lift_exist is None:
         lift = 0
     else:
         lift = 1
     balcon = td[1]
-    balconExist = re.search('\d+', str(balcon))
-    if balconExist == None:
+    balcon_exist = re.search(r'\d+', str(balcon))
+    if balcon_exist is None:
         balcon = 0
     else:
         balcon = 1
 
     window = td[3].get_text().encode('utf-8')
-    windowStreetExist = re.search('улица', window)
-    if windowStreetExist != None:
-        windowStreet = 1
+    window_street_exist = re.search('улица', window)
+    if window_street_exist is not None:
+        window_street = 1
     else:
-        windowStreet = 0
+        window_street = 0
 
-    windowBackyardExist = re.search('двор', window)
-    if windowBackyardExist != None:
-        windowBackyard = 1
+    window_backyard_exist = re.search('двор', window)
+    if window_backyard_exist is not None:
+        window_backyard = 1
     else:
-        windowBackyard = 0
+        window_backyard = 0
 
     phone = td[4].get_text().encode('utf-8')
-    phoneExist = re.search('да', phone)
-    if phoneExist != None:
+    phone_exist = re.search('да', phone)
+    if phone_exist is not None:
         phone = 1
     else:
         phone = 0
 
-    if print_result: print("Есть ли лифт:" + str(lift))
-    if print_result: print("Есть ли балкон:" + str(balcon))
-    if print_result: print("Есть ли окно на улицу:" + str(windowStreet))
-    if print_result: print("Есть ли окно во двор:" + str(windowBackyard))
-    if print_result: print("Есть ли телефон:" + str(phone))
-    return [lift, balcon, windowStreet, windowBackyard, phone]
+    if print_result:
+        print("Есть ли лифт:" + str(lift))
+    if print_result:
+        print("Есть ли балкон:" + str(balcon))
+    if print_result:
+        print("Есть ли окно на улицу:" + str(window_street))
+    if print_result:
+        print("Есть ли окно во двор:" + str(window_backyard))
+    if print_result:
+        print("Есть ли телефон:" + str(phone))
+    return [lift, balcon, window_street, window_backyard, phone]
 
 
 def get_info(tr):
