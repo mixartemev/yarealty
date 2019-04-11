@@ -1,16 +1,15 @@
 import argparse
 import requests
 
-API_URL = "https://realty.yandex.ru/gate/react-page/get/?rgid={0}&type={1}&category={2}&page={3}&_format=react" \
-          "&_pageType=search&_providers=react-search-data&pageSize=250"  # &searchType=newbuilding-search
+API_URL = "http://api.cian.ru/search-offers/v1/search-offers-for-mobile-apps/?deal_type={0}&offer_type={1}&id_user={2}"\
+          "&p={3}&engine_version=2&new_schema=1&per_page=50"
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--output_file', type=str, default='output/output.json', help='directory to save parsed data')
-parser.add_argument('--page_number', type=int, default=1, help='page number to start')
+parser.add_argument('--deal_type', type=str, default="rent", help='realty type')
+parser.add_argument('--offer_type', type=str, default="office", help='realty category')
+parser.add_argument('--id_user', type=int, default=9383110, help='user id')
+parser.add_argument('--page_number', type=int, default=0, help='page number to start')
 parser.add_argument('--delay', type=float, default=3, help='delay between requests')
-parser.add_argument('--rgid', type=int, default=187, help='region id')
-parser.add_argument('--type', type=str, default="RENT", help='realty type')
-parser.add_argument('--category', type=str, default="APARTMENT", help='realty category')
 arguments = parser.parse_args()
 
 
@@ -21,17 +20,13 @@ def _read_cookies() -> dict:
 
 def make(args, page_number: int) -> dict:
     headers = {
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
-        "Cache-Control": "max-age=0",
-        "Connection": "keep-alive",
-        "Host": "realty.yandex.ru",
-        "Upgrade-Insecure-Requests": "1",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0"
+        "Accept": "*/*",
+        "Authorization": "simple eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM3NDMxOTA5LWQ3OWQtNGUwMy04OGRjLWE3ODRkYzZjMDE5YyIsImlzUmVnaXN0ZXJlZCI6ZmFsc2V9.MbZKw7_e6ZZiUdzPTPohzWahEnIZQAfvkxPZGoTs4j4",
+        "ApplicationID": "7B8669C8-E0CF-4F4E-AE15-70A1B0606D9F",
+        "User-Agent": "CIAN/1.84 (iPhone; iOS 12.2; Scale/3.00; 7B8669C8-E0CF-4F4E-AE15-70A1B0606D9F)",
     }
     cookies = _read_cookies()
 
-    url = API_URL.format(args.rgid, args.type, args.category, page_number)
+    url = API_URL.format(args.deal_type, args.offer_type, args.id_user, page_number)
     r = requests.get(url, headers=headers, cookies=cookies)
     return r.json()
