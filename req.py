@@ -22,8 +22,8 @@ def make(args, page_number: int) -> dict:
     headers = {
         "Accept": "*/*",
         "Authorization": "simple eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM3NDMxOTA5LWQ3OWQtNGUwMy04OGRjLWE3ODRkYzZjMDE5YyIsImlzUmVnaXN0ZXJlZCI6ZmFsc2V9.MbZKw7_e6ZZiUdzPTPohzWahEnIZQAfvkxPZGoTs4j4",
-        "ApplicationID": "7B8669C8-E0CF-4F4E-AE15-70A1B0606D9F",
-        "User-Agent": "CIAN/1.84 (iPhone; iOS 12.2; Scale/3.00; 7B8669C8-E0CF-4F4E-AE15-70A1B0606D9F)",
+        # "ApplicationID": "7B8669C8-E0CF-4F4E-AE15-70A1B0606D9F",
+        # "User-Agent": "CIAN/1.84 (iPhone; iOS 12.2; Scale/3.00; 7B8669C8-E0CF-4F4E-AE15-70A1B0606D9F)",
     }
     cookies = _read_cookies()
 
