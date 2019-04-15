@@ -1,17 +1,23 @@
 from models import *
+from models.house import House
 
 
 class Newbuilding(Base):
     __tablename__ = 'newbuildings'
-    id = Column(BigInteger, primary_key=True)
-    fkid = Column(Integer)
+    id = Column(Integer, primary_key=True)
     name = Column(String)
-    region = Column(String)  # , ForeignKey('buildings.id')
+    region_id = Column(Integer, ForeignKey('locations.id'))
     address = Column(String)
+    # Belongs to Region
+    region = relationship(
+        "Location",  # foreign model name
+        back_populates="newbuildings"  # this property name in foreign model
+    )
+    # Have many Houses
+    houses = relationship("House", order_by=House.id, back_populates="newbuilding")
 
-    def __init__(self, id, fkid, name, region, address):
+    def __init__(self, id, name, region_id, address):
         self.id = id
-        self.fkid = fkid
         self.name = name
-        self.region = region
+        self.region_id = region_id
         self.address = address

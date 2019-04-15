@@ -4,8 +4,8 @@ from models import *
 class Offer(Base):
     __tablename__ = 'offers'
     id = Column(BigInteger, primary_key=True)
-    businessShoppingCenter_id = Column(Integer)  # , ForeignKey('buildings.id')
-    newbuilding_id = Column(Integer)  # , ForeignKey('new_buildings.id')
+    bc_id = Column(Integer)  # , ForeignKey('buildings.id')
+    house_id = Column(Integer, ForeignKey('houses.id'))
     description = Column(String)
     creationDate = Column(Date)
     editDate = Column(Date)
@@ -22,11 +22,15 @@ class Offer(Base):
     userTrust = Column(Enum("involved", name='userTrust'))
     isPro = Column(Boolean)
     publishTerms_autoprolong = Column(Boolean)
+    # Belongs to House
+    house = relationship("House", back_populates="offers")
+    # Have many Photos
+    # photos = relationship("Photo", order_by=Photo.id, back_populates="offer")
 
     def __init__(self,
                  id,
-                 businessShoppingCenter_id,
-                 newbuilding_id,
+                 bc_id,
+                 house_id,
                  description,
                  creationDate,
                  editDate,
@@ -44,8 +48,8 @@ class Offer(Base):
                  isPro,
                  publishTerms_autoprolong):
         self.id = id
-        self.businessShoppingCenter_id = businessShoppingCenter_id
-        self.newbuilding_id = newbuilding_id
+        self.bc_id = bc_id
+        self.house_id = house_id
         self.description = description
         self.creationDate = creationDate
         self.editDate = editDate

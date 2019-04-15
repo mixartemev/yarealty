@@ -1,3 +1,5 @@
+from models.house import House
+from models.location import Location
 from models.newbuilding import Newbuilding
 from models.offer import Offer
 from db import session
@@ -7,12 +9,29 @@ import time
 
 import csv
 
-with open('temp/newobject.tsv') as tsvfile:
+with open('temp/locations.tsv') as tsvfile:
+    reader = csv.reader(tsvfile, delimiter='\t')
+    for row in reader:
+        params = tuple(row)
+        session.merge(Location(*params))
+
+session.commit()
+
+with open('temp/newbuildings.tsv') as tsvfile:
     reader = csv.reader(tsvfile, delimiter='\t')
     for row in reader:
         params = tuple(row)
         session.merge(Newbuilding(*params))
 
+session.commit()
+
+with open('temp/houses.tsv') as tsvfile:
+    reader = csv.reader(tsvfile, delimiter='\t')
+    for row in reader:
+        params = tuple(row)
+        session.merge(House(*params))
+
+session.commit()
 
 def main():
     current_page = args.page_number
