@@ -15,15 +15,11 @@ with open('temp/locations.tsv') as tsvfile:
         params = tuple(row)
         session.merge(Location(*params))
 
-session.commit()
-
 with open('temp/newbuildings.tsv') as tsvfile:
     reader = csv.reader(tsvfile, delimiter='\t')
     for row in reader:
         params = tuple(row)
         session.merge(Newbuilding(*params))
-
-session.commit()
 
 with open('temp/houses.tsv') as tsvfile:
     reader = csv.reader(tsvfile, delimiter='\t')
@@ -31,7 +27,6 @@ with open('temp/houses.tsv') as tsvfile:
         params = tuple(row)
         session.merge(House(*params))
 
-session.commit()
 
 def main():
     current_page = args.page_number
