@@ -23,6 +23,8 @@ class Offer(Base):
     services = Column(Enum("top3", "paid", name='services'))
     userTrust = Column(Enum("involved", name='userTrust'))
     isPro = Column(Boolean)
+    stats_total = Column(SmallInteger)
+    stats_daily = Column(SmallInteger)
     publishTerms_autoprolong = Column(Boolean)
     # Belongs to House
     house = relationship("House", back_populates="offers")
@@ -51,6 +53,8 @@ class Offer(Base):
                  services,
                  userTrust,
                  isPro,
+                 stats_total,
+                 stats_daily,
                  publishTerms_autoprolong):
         self.id = id
         self.bc_id = bc_id
@@ -71,4 +75,6 @@ class Offer(Base):
         self.services = services
         self.userTrust = userTrust
         self.isPro = isPro
+        self.stats_total = stats_total
+        self.stats_daily = stats_daily
         self.publishTerms_autoprolong = publishTerms_autoprolong

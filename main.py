@@ -8,25 +8,25 @@ from req import arguments as args, make as make_request
 from converter import convert
 import time
 
-import csv
-
-with open('temp/locations.tsv') as tsvfile:
-    reader = csv.reader(tsvfile, delimiter='\t')
-    for row in reader:
-        params = tuple(row)
-        session.merge(Location(*params))
-
-with open('temp/newbuildings.tsv') as tsvfile:
-    reader = csv.reader(tsvfile, delimiter='\t')
-    for row in reader:
-        params = tuple(row)
-        session.merge(Newbuilding(*params))
-
-with open('temp/houses.tsv') as tsvfile:
-    reader = csv.reader(tsvfile, delimiter='\t')
-    for row in reader:
-        params = tuple(row)
-        session.merge(House(*params))
+# import csv
+#
+# with open('temp/locations.tsv') as tsvfile:
+#     reader = csv.reader(tsvfile, delimiter='\t')
+#     for row in reader:
+#         params = tuple(row)
+#         session.merge(Location(*params))
+#
+# with open('temp/newbuildings.tsv') as tsvfile:
+#     reader = csv.reader(tsvfile, delimiter='\t')
+#     for row in reader:
+#         params = tuple(row)
+#         session.merge(Newbuilding(*params))
+#
+# with open('temp/houses.tsv') as tsvfile:
+#     reader = csv.reader(tsvfile, delimiter='\t')
+#     for row in reader:
+#         params = tuple(row)
+#         session.merge(House(*params))
 
 # with open('temp/bc_id.tsv') as tsvfile:
 #     reader = csv.reader(tsvfile, delimiter='\t')

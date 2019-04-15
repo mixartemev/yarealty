@@ -26,5 +26,7 @@ def _offer(o: dict) -> tuple:
         o['services'][0],
         o['userTrust'],
         o['isPro'],
+        o['stats']['total'],
+        o['stats']['daily'],
         o['publishTerms'].get('autoprolong'),
     )
