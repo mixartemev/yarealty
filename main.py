@@ -1,8 +1,17 @@
+from models.newbuilding import Newbuilding
 from models.offer import Offer
 from db import session
 from req import arguments as args, make as make_request
 from converter import convert
 import time
+
+import csv
+
+with open('temp/newobject.tsv') as tsvfile:
+    reader = csv.reader(tsvfile, delimiter='\t')
+    for row in reader:
+        params = tuple(row)
+        session.merge(Newbuilding(*params))
 
 
 def main():
