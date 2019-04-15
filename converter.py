@@ -10,6 +10,7 @@ def _offer(o: dict) -> tuple:
         o['id'],
         o['businessShoppingCenter'].get('id'),
         o['newbuilding']['house']['id'] if (o['newbuilding'].get('house') if o.get('newbuilding') else None) else None,
+        o['newbuilding']['id'] if o.get('newbuilding') else None,
         o['description'],
         o['creationDate'],
         o['editDate'],

@@ -28,11 +28,14 @@ with open('temp/houses.tsv') as tsvfile:
         params = tuple(row)
         session.merge(House(*params))
 
-with open('temp/bc_id.tsv') as tsvfile:
-    reader = csv.reader(tsvfile, delimiter='\t')
-    for row in reader:
-        params = tuple(row)
-        session.merge(Bc(*params))
+# with open('temp/bc_id.tsv') as tsvfile:
+#     reader = csv.reader(tsvfile, delimiter='\t')
+#     for row in reader:
+#         if row[3]:
+#             if not session.query(Bc).get(row[3]):
+#                 continue
+#         params = tuple(row)
+#         session.merge(Bc(*params))
 
 
 def main():

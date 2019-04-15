@@ -6,6 +6,8 @@ class Offer(Base):
     id = Column(BigInteger, primary_key=True)
     bc_id = Column(Integer, ForeignKey('bcs.id'))
     house_id = Column(Integer, ForeignKey('houses.id'))
+    newbuilding_id = Column(Integer, ForeignKey('newbuildings.id'))
+
     description = Column(String)
     creationDate = Column(Date)
     editDate = Column(Date)
@@ -24,6 +26,7 @@ class Offer(Base):
     publishTerms_autoprolong = Column(Boolean)
     # Belongs to House
     house = relationship("House", back_populates="offers")
+    newbuilding = relationship("Newbuilding")
     bc = relationship("Bc", back_populates="offers")
     # Have many Photos
     # photos = relationship("Photo", order_by=Photo.id, back_populates="offer")
@@ -32,6 +35,7 @@ class Offer(Base):
                  id,
                  bc_id,
                  house_id,
+                 newbuilding_id,
                  description,
                  creationDate,
                  editDate,
@@ -51,6 +55,7 @@ class Offer(Base):
         self.id = id
         self.bc_id = bc_id
         self.house_id = house_id
+        self.newbuilding_id = newbuilding_id
         self.description = description
         self.creationDate = creationDate
         self.editDate = editDate
