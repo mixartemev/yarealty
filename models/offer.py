@@ -4,7 +4,7 @@ from models import *
 class Offer(Base):
     __tablename__ = 'offers'
     id = Column(BigInteger, primary_key=True)
-    bc_id = Column(Integer)  # , ForeignKey('buildings.id')
+    bc_id = Column(Integer, ForeignKey('bcs.id'))
     house_id = Column(Integer, ForeignKey('houses.id'))
     description = Column(String)
     creationDate = Column(Date)
@@ -24,6 +24,7 @@ class Offer(Base):
     publishTerms_autoprolong = Column(Boolean)
     # Belongs to House
     house = relationship("House", back_populates="offers")
+    bc = relationship("Bc", back_populates="offers")
     # Have many Photos
     # photos = relationship("Photo", order_by=Photo.id, back_populates="offer")
 

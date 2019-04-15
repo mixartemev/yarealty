@@ -1,3 +1,4 @@
+from models.bc import Bc
 from models.house import House
 from models.location import Location
 from models.newbuilding import Newbuilding
@@ -26,6 +27,12 @@ with open('temp/houses.tsv') as tsvfile:
     for row in reader:
         params = tuple(row)
         session.merge(House(*params))
+
+with open('temp/bc_id.tsv') as tsvfile:
+    reader = csv.reader(tsvfile, delimiter='\t')
+    for row in reader:
+        params = tuple(row)
+        session.merge(Bc(*params))
 
 
 def main():
