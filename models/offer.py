@@ -4,6 +4,7 @@ from models import *
 class Offer(Base):
     __tablename__ = 'offers'
     id = Column(BigInteger, primary_key=True)
+    idd = Column(Integer, unique=True)
     bc_id = Column(Integer, ForeignKey('bcs.id'))
     house_id = Column(Integer, ForeignKey('houses.id'))
     newbuilding_id = Column(Integer, ForeignKey('newbuildings.id'))
@@ -12,11 +13,12 @@ class Offer(Base):
     creationDate = Column(Date)
     editDate = Column(Date)
     publishDate = Column(Date)
-    offerType = Column(Enum("commercial", "living", name='offerType'))
-    dealType = Column(Enum("rent", "sell", name='dealType'))
+    # offerType = Column(Enum("commercial", "flat", name='offerType'))
+    category = Column(Enum("office", "shoppingArea", "flat", name='category'))
+    dealType = Column(Enum("rent", "sale", name='dealType'))
     status = Column(Enum("published", name='status'))
     bargainTerms_currency = Column(Enum("rur", "usd", "eur", name='currency'))
-    price = Column(Integer)
+    price = Column(BigInteger)
     pricePerUnitArea = Column(Integer)
     floorNumber = Column(SmallInteger)
     totalArea = Column(DECIMAL(6, 2))
@@ -35,6 +37,7 @@ class Offer(Base):
 
     def __init__(self,
                  id,
+                 idd,
                  bc_id,
                  house_id,
                  newbuilding_id,
@@ -42,7 +45,8 @@ class Offer(Base):
                  creationDate,
                  editDate,
                  publishDate,
-                 offerType,
+                 # offerType,
+                 category,
                  dealType,
                  status,
                  bargainTerms_currency,
@@ -57,6 +61,7 @@ class Offer(Base):
                  stats_daily,
                  publishTerms_autoprolong):
         self.id = id
+        self.idd = idd
         self.bc_id = bc_id
         self.house_id = house_id
         self.newbuilding_id = newbuilding_id
@@ -64,7 +69,8 @@ class Offer(Base):
         self.creationDate = creationDate
         self.editDate = editDate
         self.publishDate = publishDate
-        self.offerType = offerType
+        # self.offerType = offerType
+        self.category = category
         self.dealType = dealType
         self.status = status
         self.bargainTerms_currency = bargainTerms_currency

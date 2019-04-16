@@ -9,7 +9,7 @@ from converter import convert
 import time
 
 # import csv
-#
+
 # with open('temp/locations.tsv') as tsvfile:
 #     reader = csv.reader(tsvfile, delimiter='\t')
 #     for row in reader:
@@ -28,7 +28,7 @@ import time
 #         params = tuple(row)
 #         session.merge(House(*params))
 
-# with open('temp/bc_id.tsv') as tsvfile:
+# with open('temp/bc.tsv') as tsvfile:
 #     reader = csv.reader(tsvfile, delimiter='\t')
 #     for row in reader:
 #         if row[3]:
@@ -36,6 +36,7 @@ import time
 #                 continue
 #         params = tuple(row)
 #         session.merge(Bc(*params))
+# session.commit()
 
 
 def main():
