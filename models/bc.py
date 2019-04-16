@@ -1,7 +1,5 @@
-from datetime import datetime
 from sqlalchemy.orm import backref
 from models import *
-from models.offer import Offer
 
 
 class Bc(Base):
@@ -12,7 +10,7 @@ class Bc(Base):
     parent_id = Column(Integer, ForeignKey('bcs.id'))
     address = Column(String)
     editDate = Column(Date)
-    offers = relationship("Offer", order_by=Offer.id, back_populates="bc")
+    offers = relationship("Offer", back_populates="bc")
     # children = relationship("Bc", back_populates="parent")
     # parent = relationship("Bc", remote_side=[id],  back_populates="children")
     children = relationship("Bc", backref=backref('parent', remote_side=[id]))

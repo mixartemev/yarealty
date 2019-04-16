@@ -1,4 +1,8 @@
 from models import *
+from models.bc import Bc
+from models.house import House
+from models.location import Location
+from models.newbuilding import Newbuilding
 
 
 class Offer(Base):
