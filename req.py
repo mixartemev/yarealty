@@ -4,10 +4,14 @@ import requests
 API_URL = "http://api.cian.ru/search-offers/v1/search-offers-for-mobile-apps/?deal_type={0}&offer_type={1}&id_user={2}"\
           "&p={3}&engine_version=2&new_schema=1&per_page=50"
 
+API_RIVAL_URL = "http://api.cian.ru/search-offers/v1/search-offers-for-mobile-apps/?deal_type={0}&offer_type={1}"\
+                "&bs_center_id={2}&p={3}&engine_version=2&new_schema=1&per_page=50"
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--deal_type', type=str, default="rent", help='realty type')
 parser.add_argument('--offer_type', type=str, default="office", help='realty category')
 parser.add_argument('--id_user', type=int, default=9383110, help='user id')
+parser.add_argument('--bs_center_id', type=int, default=8366, help='bs_center id')
 parser.add_argument('--page_number', type=int, default=0, help='page number to start')
 parser.add_argument('--delay', type=float, default=3, help='delay between requests')
 arguments = parser.parse_args()
@@ -27,6 +31,7 @@ def make(args, page_number: int) -> dict:
     }
     cookies = _read_cookies()
 
-    url = API_URL.format(args.deal_type, args.offer_type, args.id_user, page_number)
+    # url = API_URL.format(args.deal_type, args.offer_type, args.id_user, page_number)
+    url = API_RIVAL_URL.format(args.deal_type, args.offer_type, args.bs_center_id, page_number)
     r = requests.get(url, headers=headers, cookies=cookies)
     return r.json()

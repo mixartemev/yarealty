@@ -3,6 +3,7 @@ from models.house import House
 from models.location import Location
 from models.newbuilding import Newbuilding
 from models.offer import Offer
+from models.rivalOffer import RivalOffer
 from db import session
 from req import arguments as args, make as make_request
 from converter import convert
@@ -48,14 +49,15 @@ def main():
         if 'error' in result:
             exit()
 
-        res = result['data']['offers']
+        res: list = result['data']['offers']
 
         for e in convert(res):
-            session.merge(Offer(*e['offer']))
+            session.merge(RivalOffer(*e['rivalOffer']))
 
         session.commit()
         current_page += 1
-        print("Waiting {0} seconds".format(args.delay))
+        print("{0} offers received. "
+              "Waiting {1} seconds".format(res.__len__(), args.delay))
         time.sleep(args.delay)
     except Exception as e:
         print(e)

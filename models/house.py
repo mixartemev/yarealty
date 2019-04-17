@@ -9,6 +9,7 @@ class House(Base):
     address = Column(String)
     newbuilding = relationship("Newbuilding", back_populates="houses")
     offers = relationship("Offer", back_populates="house")
+    rivalOffers = relationship("RivalOffer", back_populates="house")
 
     def __init__(self, id, newbuilding_id, name, address):
         self.id = id
