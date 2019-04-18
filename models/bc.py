@@ -1,11 +1,12 @@
 from sqlalchemy.orm import backref
 from models import *
+from datetime import datetime
 
 
 class Bc(Base):
     __tablename__ = 'bcs'
     id = Column(Integer, primary_key=True)
-    typ = Column(Enum("БЦ", "ТЦ", name="typ"))
+    typ = Column(Enum("БЦ", "ТЦ", name="typ", schema='cian'))
     name = Column(String)
     parent_id = Column(Integer, ForeignKey('bcs.id'))
     address = Column(String)
@@ -22,4 +23,4 @@ class Bc(Base):
         self.name = name
         self.parent_id = parent_id if parent_id else None
         self.address = address
-        self.editDate = editDate
+        self.editDate = datetime.strptime(editDate, "%d.%m.%Y").date()
