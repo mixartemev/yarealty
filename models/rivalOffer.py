@@ -17,7 +17,7 @@ class RivalOffer(Base):
     creationDate = Column(Date)
     editDate = Column(Date)
     publishDate = Column(Date)
-    category = Column(Enum("office", "shoppingArea", "flat", "freeAppointmentObject", name='category', schema='cian'))
+    category = Column(Enum("office", "shoppingArea", "flat", "freeAppointmentObject", "dailyFlat", name='category', schema='cian'))
     dealType = Column(Enum("rent", "sale", name='dealType', schema='cian'))
     status = Column(Enum("published", name='status', schema='cian'))
     bargainTerms_currency = Column(Enum("rur", "usd", "eur", name='currency', schema='cian'))
