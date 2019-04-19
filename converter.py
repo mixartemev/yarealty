@@ -41,6 +41,7 @@ def _offer(o: dict) -> tuple:
 def _rivalOffer(o: dict) -> tuple:
     return (
         o['id'],
+        o['cianUserId'],
         o['businessShoppingCenter'].get('id') if o.get('businessShoppingCenter') else None,
         o['newbuilding']['house']['id'] if (o['newbuilding'].get('house') if o.get('newbuilding') else None) else None,
         o['newbuilding']['id'] if o.get('newbuilding') else None,

@@ -54,7 +54,7 @@ def main():
     for o in offers:
         body['values'].append([
             o.id,
-            # '=HYPERLINK("https://www.mcity.ru/{}";"{}")'.format(o.idd, o.idd) if o.idd else None,
+            o.cianUserId if o.cianUserId else '=HYPERLINK("https://www.mcity.ru/{}";"{}")'.format(o.idd, o.idd) if o.idd else None,
             o.bc.name if o.bc_id else None,
             o.house.name if o.house_id else None,
             o.newbuilding.name if o.newbuilding_id else None,

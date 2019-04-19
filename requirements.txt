@@ -1,5 +1,6 @@
 google-api-python-client
-beautifulsoup4
-lxml
+google-auth-httplib2
+google-auth-oauthlib
 requests
 sqlalchemy
+psycopg2-binary

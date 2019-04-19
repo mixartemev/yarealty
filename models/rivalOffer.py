@@ -8,6 +8,7 @@ from models.newbuilding import Newbuilding
 class RivalOffer(Base):
     __tablename__ = 'rival_offers'
     id = Column(BigInteger, primary_key=True)
+    cianUserId = Column(Integer)
     bc_id = Column(Integer, ForeignKey('bcs.id'))
     house_id = Column(Integer, ForeignKey('houses.id'))
     newbuilding_id = Column(Integer, ForeignKey('newbuildings.id'))
@@ -23,7 +24,7 @@ class RivalOffer(Base):
     price = Column(BigInteger)
     pricePerUnitArea = Column(Integer)
     floorNumber = Column(SmallInteger)
-    totalArea = Column(DECIMAL(6, 2))
+    totalArea = Column(DECIMAL(7, 2))
     services = Column(Enum("top3", "paid", "premium", name='services', schema='cian'))
     userTrust = Column(Enum("involved", "notInvolved", "new", "excluded", name='userTrust', schema='cian'))
     isPro = Column(Boolean)
@@ -39,6 +40,7 @@ class RivalOffer(Base):
 
     def __init__(self,
                  id,
+                 cianUserId,
                  bc_id,
                  house_id,
                  newbuilding_id,
@@ -61,6 +63,7 @@ class RivalOffer(Base):
                  stats_daily,
                  publishTerms_autoprolong):
         self.id = id
+        self.cianUserId = cianUserId
         self.bc_id = bc_id
         self.house_id = house_id
         self.newbuilding_id = newbuilding_id
