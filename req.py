@@ -25,6 +25,6 @@ def make(args, page_number: int) -> dict:
     cookies = _read_cookies()
 
     third = args.user_id if args.user_id else args.bs_center_id
-    url = API_FLAT_URL.format(args.deal_type, args.offer_type, page_number)
+    url = API_OFFICE_URL.format(args.deal_type, args.offer_type, page_number, third)
     r = requests.get(url, headers=headers, cookies=cookies)
     return r.json()

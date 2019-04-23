@@ -63,17 +63,20 @@ def main():
 
             res: list = result['data']['offers']
 
-            if not res:
-                break  # Объявлений больше нет -> съёбки
-
             for e in convert(res):
-                session.merge(Offer(*e['Offer']) if args.user_id == 9383110 else RivalOffer(*e['rivalOffer']))
+                if e['rivalOffer'][9] != 'dailyFlat':
+                    session.merge(Offer(*e['Offer']) if args.user_id == 9383110 else RivalOffer(*e['rivalOffer']))
 
             session.commit()
+
             current_page += 1
             delay = randint(5, 15)
-            print("{0} {1} {2} {3} received.\nWaiting {4} seconds.."
-                  .format(res.__len__(), args.deal_type, args.offer_type, 'mcities' if args.user_id == 9383110 else 'rivals', delay))
+            length = res.__len__()
+            print("{0} {1} {2} {3} received.\nWaiting {4} seconds..".format(
+                length, args.deal_type, args.offer_type, 'mcities' if args.user_id == 9383110 else 'rivals', delay
+            ))
+            if length < 50:
+                break  # Объявлений больше нет -> съёбки
             time.sleep(delay)
     except Exception as e:
         print(e)

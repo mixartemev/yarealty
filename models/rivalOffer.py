@@ -17,7 +17,8 @@ class RivalOffer(Base):
     creationDate = Column(Date)
     editDate = Column(Date)
     publishDate = Column(Date)
-    category = Column(Enum("office", "shoppingArea", "flat", "freeAppointmentObject", "dailyFlat", name='category', schema='cian'))
+    category = Column(Enum("office", "shoppingArea", "flat", "freeAppointmentObject", "newBuildingFlat",
+                           name='category', schema='cian'))
     dealType = Column(Enum("rent", "sale", name='dealType', schema='cian'))
     status = Column(Enum("published", name='status', schema='cian'))
     bargainTerms_currency = Column(Enum("rur", "usd", "eur", name='currency', schema='cian'))
@@ -25,7 +26,7 @@ class RivalOffer(Base):
     pricePerUnitArea = Column(Integer)
     floorNumber = Column(SmallInteger)
     totalArea = Column(DECIMAL(7, 2))
-    services = Column(Enum("top3", "paid", "premium", name='services', schema='cian'))
+    services = Column(Enum("top3", "paid", "premium", "free", name='services', schema='cian'))
     userTrust = Column(Enum("involved", "notInvolved", "new", "excluded", name='userTrust', schema='cian'))
     isPro = Column(Boolean)
     stats_total = Column(SmallInteger)
