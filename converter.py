@@ -1,15 +1,19 @@
 import re
+from typing import List, Tuple
 
 
 def convert(raw_data: list):
     for e in raw_data:
         yield {
             "offer": _offer(e),
-            "rivalOffer": _rivalOffer(e),
+            "mcityOffer": _mcityOffer(e),
+            "statsDaily": _statsDaily(e),
+            "historyPrice": _historyPrice(e),
+            "historyPromo": _historyPromo(e),
         }
 
 
-def _offer(o: dict) -> tuple:
+def _mcityOffer(o: dict) -> tuple:
     idd = re.match(r'ID:(\d{6})', o['description'])
     return (
         o['id'],
@@ -25,20 +29,16 @@ def _offer(o: dict) -> tuple:
         o['dealType'],
         o['status'],
         o['bargainTerms']['currency'],
-        o['bargainTerms']['price'],
-        o['pricePerUnitArea'] if o.get('pricePerUnitArea') else None,
+        o['bargainTerms'].get('paymentPeriod'),
         o['floorNumber'],
         o['totalArea'],
-        o['services'][0],
         o['userTrust'],
         o.get('isPro'),
-        o['stats']['total'] if o.get('stats') else None,
-        o['stats']['daily'] if o.get('stats') else None,
         o['publishTerms'].get('autoprolong'),
     )
 
 
-def _rivalOffer(o: dict) -> tuple:
+def _offer(o: dict) -> tuple:
     return (
         o['id'],
         o['cianUserId'],
@@ -53,14 +53,32 @@ def _rivalOffer(o: dict) -> tuple:
         o['dealType'],
         o['status'],
         o['bargainTerms']['currency'],
-        o['bargainTerms']['price'],
-        o['pricePerUnitArea'] if o.get('pricePerUnitArea') else None,
+        o['bargainTerms'].get('paymentPeriod'),
         o['floorNumber'],
         o['totalArea'],
-        o['services'][0],
         o['userTrust'],
         o.get('isPro'),
-        o['stats']['total'] if o.get('stats') else None,
-        o['stats']['daily'] if o.get('stats') else None,
         o['publishTerms'].get('autoprolong'),
     )
+
+
+def _statsDaily(o: dict) -> Tuple[int, int, int]:
+    return (
+        o['id'],
+        o['stats']['total'] if o.get('stats') else None,
+        o['stats']['daily'] if o.get('stats') else None,
+    )
+
+
+def _historyPromo(o: dict) -> Tuple[int, str]:
+    return (
+        o['id'],
+        o['services'][0]
+    )
+
+
+def _historyPrice(o: dict) -> List[Tuple[int, float, int]]:
+    prices = []
+    for ph in o['historyPriceChanges']:
+        prices.append((o['id'], ph["changeTime"], ph["priceData"]["price"]))
+    return prices

@@ -5,8 +5,15 @@
 import argparse
 import time
 from random import randint
-from models.offer import Offer
-from models.rivalOffer import RivalOffer
+from typing import Any, Union
+
+from sqlalchemy.util.langhelpers import _symbol
+
+from models.statsDaily import StatsDaily
+from models.historyPrice import HistoryPrice
+from models.historyPromo import HistoryPromo
+from models.mcityOffer import McityOffer
+from models.Offer import Offer
 from db import session
 from req import make as make_request
 from converter import convert
@@ -64,8 +71,16 @@ def main():
             res: list = result['data']['offers']
 
             for e in convert(res):
-                if e['rivalOffer'][9] != 'dailyFlat':
-                    session.merge(Offer(*e['Offer']) if args.user_id == 9383110 else RivalOffer(*e['rivalOffer']))
+                if e['offer'][9] != 'dailyFlat':
+                    session.merge(McityOffer(*e['mcityOffer']) if args.user_id == 9383110 else Offer(*e['offer']))
+                    hp = e['historyPromo']
+                    db_hp: HistoryPromo = session.query(HistoryPromo).get((hp[0], hp[1]))
+                    if db_hp.services != hp[3]:
+                        session.merge(HistoryPromo(*hp))
+                    session.merge(StatsDaily(*e['statsDaily']))
+                    for p in e['historyPrice']:
+                        h = HistoryPrice(*p)
+                        session.merge(h)
 
             session.commit()
 

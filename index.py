@@ -2,7 +2,7 @@ from models.author import Author
 from models.site import Site
 from models.newBuilding import NewBuilding
 from models.building import Building
-from models.offer import Offer
+from models.mcityOffer import Offer
 from db import session
 from req import arguments as args, make as make_request
 from converter import convert

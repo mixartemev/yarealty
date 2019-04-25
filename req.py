@@ -3,9 +3,9 @@ import requests
 COMMON_URL = "http://api.cian.ru/search-offers/v1/search-offers-for-mobile-apps/" \
           "?deal_type={0}&offer_type={1}&p={2}&engine_version=2&new_schema=1&per_page=50"
 
-API_MCITY_URL = COMMON_URL + "&id_user={3}"
-API_OFFICE_URL = COMMON_URL + "&bs_center_id={3}"
-API_FLAT_URL = COMMON_URL + "&newobject[0]=1502&newobject[1]=5222&newobject[2]=5227&newobject[3]=5340&newobject[4]=" \
+MCITY_URL = COMMON_URL + "&id_user={3}"
+OFFICE_URL = COMMON_URL + "&bs_center_id={3}"
+FLAT_URL = COMMON_URL + "&newobject[0]=1502&newobject[1]=5222&newobject[2]=5227&newobject[3]=5340&newobject[4]=" \
                             "5386&newobject[5]=5822&newobject[6]=6322&newobject[7]=8825&newobject[8]=45865"
 
 
@@ -25,6 +25,7 @@ def make(args, page_number: int) -> dict:
     cookies = _read_cookies()
 
     third = args.user_id if args.user_id else args.bs_center_id
-    url = API_OFFICE_URL.format(args.deal_type, args.offer_type, page_number, third)
+    url = MCITY_URL if args.user_id == 9383110 else (OFFICE_URL if args.offer_type == 'office' else FLAT_URL)
+    url = url.format(args.deal_type, args.offer_type, page_number, third)
     r = requests.get(url, headers=headers, cookies=cookies)
     return r.json()

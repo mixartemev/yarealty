@@ -1,12 +1,17 @@
+from sqlalchemy import DateTime, func
+
 from models import *
 from models.bc import Bc
+from models.historyPrice import HistoryPrice
+from models.historyPromo import HistoryPromo
 from models.house import House
 from models.location import Location
 from models.newbuilding import Newbuilding
+from models.statsDaily import StatsDaily
 
 
-class RivalOffer(Base):
-    __tablename__ = 'rival_offers'
+class Offer(Base):
+    __tablename__ = 'offers'
     id = Column(BigInteger, primary_key=True)
     cianUserId = Column(Integer)
     bc_id = Column(Integer, ForeignKey('bcs.id'))
@@ -21,23 +26,24 @@ class RivalOffer(Base):
                            name='category', schema='cian'))
     dealType = Column(Enum("rent", "sale", name='dealType', schema='cian'))
     status = Column(Enum("published", name='status', schema='cian'))
-    bargainTerms_currency = Column(Enum("rur", "usd", "eur", name='currency', schema='cian'))
-    price = Column(BigInteger)
-    pricePerUnitArea = Column(Integer)
+    currency = Column(Enum("rur", "usd", "eur", name='currency', schema='cian'))
+    paymentPeriod = Column(Enum("monthly", "annual", name='paymentPeriod', schema='cian'))
     floorNumber = Column(SmallInteger)
     totalArea = Column(DECIMAL(7, 2))
-    services = Column(Enum("top3", "paid", "premium", "free", name='services', schema='cian'))
     userTrust = Column(Enum("involved", "notInvolved", "new", "excluded", name='userTrust', schema='cian'))
     isPro = Column(Boolean)
-    stats_total = Column(SmallInteger)
-    stats_daily = Column(SmallInteger)
     publishTerms_autoprolong = Column(Boolean)
     # Belongs to House
-    house = relationship("House", back_populates="rivalOffers")
+    house = relationship("House", back_populates="offers")
     newbuilding = relationship("Newbuilding")
-    bc = relationship("Bc", back_populates="rivalOffers")
+    bc = relationship("Bc", back_populates="offers")
     # Have many Photos
     # photos = relationship("Photo", order_by=Photo.id, back_populates="offer")
+    prices = relationship("HistoryPrice", order_by=HistoryPrice.time, back_populates="offer")
+    stats = relationship("StatsDaily", order_by=StatsDaily.date, back_populates="offer")
+    promos = relationship("HistoryPromo", order_by=HistoryPromo.date, back_populates="offer")
+    created_at = Column('created_at', DateTime, default=func.now())
+    updated_at = Column('updated_at', DateTime, default=func.now(), onupdate=func.now())
 
     def __init__(self,
                  id,
@@ -52,17 +58,14 @@ class RivalOffer(Base):
                  category,
                  dealType,
                  status,
-                 bargainTerms_currency,
-                 price,
-                 pricePerUnitArea,
+                 currency,
+                 paymentPeriod,
                  floorNumber,
                  totalArea,
-                 services,
                  userTrust,
                  isPro,
-                 stats_total,
-                 stats_daily,
-                 publishTerms_autoprolong):
+                 publishTerms_autoprolong
+                 ):
         self.id = id
         self.cianUserId = cianUserId
         self.bc_id = bc_id
@@ -75,14 +78,10 @@ class RivalOffer(Base):
         self.category = category
         self.dealType = dealType
         self.status = status
-        self.bargainTerms_currency = bargainTerms_currency
-        self.price = price
-        self.pricePerUnitArea = pricePerUnitArea
+        self.bargainTerms_currency = currency
+        self.paymentPeriod = paymentPeriod
         self.floorNumber = floorNumber
         self.totalArea = totalArea
-        self.services = services
         self.userTrust = userTrust
         self.isPro = isPro
-        self.stats_total = stats_total
-        self.stats_daily = stats_daily
         self.publishTerms_autoprolong = publishTerms_autoprolong

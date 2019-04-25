@@ -9,8 +9,8 @@ from google.auth.transport.requests import Request
 
 # If modifying these scopes, delete the file token.pickle.
 from db import session
-from models.offer import Offer
-from models.rivalOffer import RivalOffer
+from models.mcityOffer import McityOffer
+from models.Offer import Offer
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
@@ -78,15 +78,15 @@ def main():
     # spreadsheet = service.spreadsheets().create(body=spreadsheet, fields='spreadsheetId').execute()
     # print('Spreadsheet ID: {0}'.format(spreadsheet.get('spreadsheetId')))
 
+    mcityOffers = session.query(McityOffer).all()
     offers = session.query(Offer).all()
-    rival_offers = session.query(RivalOffer).all()
 
     result = service.spreadsheets().values().update(
-        spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers)
+        spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_sheet(mcityOffers)
     ).execute()
     pprint(result)
     result = service.spreadsheets().values().update(
-        spreadsheetId=SPREADSHEET_ID, range='rival!A2', valueInputOption='USER_ENTERED', body=to_sheet(rival_offers)
+        spreadsheetId=SPREADSHEET_ID, range='rival!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers)
     ).execute()
     pprint(result)
 
