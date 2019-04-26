@@ -2,6 +2,7 @@ from __future__ import print_function
 import pickle
 import os.path
 from pprint import pprint
+from typing import List
 
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -18,7 +19,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 SPREADSHEET_ID = '1lPFc1p_5TNSxYOtJ4hSqcSMAiUig4slRQTdMmgJroic'
 
 
-def to_sheet(offers: list):
+def to_sheet(offers: List[Offer]):
     body = {'values': []}
     for o in offers:
         body['values'].append([
@@ -34,17 +35,17 @@ def to_sheet(offers: list):
             o.category,
             o.dealType,
             o.status,
-            o.bargainTerms_currency,
-            o.price,
-            o.pricePerUnitArea,
+            o.currency,
+            o.paymentPeriod,
             o.floorNumber,
             str(o.totalArea),
-            o.services,
             o.userTrust,
             o.isPro,
-            o.stats_total,
-            o.stats_daily,
             o.publishTerms_autoprolong,
+            o.prices[-1].price,
+            o.promos[-1].services,
+            o.stats[-1].stats_total,
+            o.stats[-1].stats_daily,
         ])
     return body
 
@@ -86,7 +87,7 @@ def main():
     ).execute()
     pprint(result)
     result = service.spreadsheets().values().update(
-        spreadsheetId=SPREADSHEET_ID, range='rival!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers)
+        spreadsheetId=SPREADSHEET_ID, range='all!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers)
     ).execute()
     pprint(result)
 

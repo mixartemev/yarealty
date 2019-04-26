@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy import DateTime, func
 
 from models import *
@@ -39,9 +41,9 @@ class Offer(Base):
     bc = relationship("Bc", back_populates="offers")
     # Have many Photos
     # photos = relationship("Photo", order_by=Photo.id, back_populates="offer")
-    prices = relationship("HistoryPrice", order_by=HistoryPrice.time, back_populates="offer")
-    stats = relationship("StatsDaily", order_by=StatsDaily.date, back_populates="offer")
-    promos = relationship("HistoryPromo", order_by=HistoryPromo.date, back_populates="offer")
+    prices: List[HistoryPrice] = relationship("HistoryPrice", order_by=HistoryPrice.time, back_populates="offer")
+    stats: List[StatsDaily] = relationship("StatsDaily", order_by=StatsDaily.date, back_populates="offer")
+    promos: List[HistoryPromo] = relationship("HistoryPromo", order_by=HistoryPromo.date, back_populates="offer")
     created_at = Column('created_at', DateTime, default=func.now())
     updated_at = Column('updated_at', DateTime, default=func.now(), onupdate=func.now())
 
@@ -78,7 +80,7 @@ class Offer(Base):
         self.category = category
         self.dealType = dealType
         self.status = status
-        self.bargainTerms_currency = currency
+        self.currency = currency
         self.paymentPeriod = paymentPeriod
         self.floorNumber = floorNumber
         self.totalArea = totalArea

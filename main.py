@@ -67,15 +67,17 @@ def main():
 
             for e in convert(res):
                 if e['offer'][9] != 'dailyFlat':
-                    session.merge(McityOffer(*e['mcityOffer']) if args.user_id == 9383110 else Offer(*e['offer']))
-                    hp = e['historyPromo']
+                    if args.user_id == 9383110:
+                        session.merge(McityOffer(*e['mcityOffer']))
+                    session.merge(Offer(*e['offer']))
+                    session.merge(StatsDaily(*e['statsDaily']))
+                    # hp = e['historyPromo']
                     # db_hp: HistoryPromo = session.query(HistoryPromo).get((hp[0], hp[1]))
                     # if db_hp.services != hp[3]:
-                    session.merge(HistoryPromo(*hp))
-                    session.merge(StatsDaily(*e['statsDaily']))
-                    for p in e['historyPrice']:
-                        h = HistoryPrice(*p)
-                        session.merge(h)
+                    #     session.add(HistoryPromo(*hp))
+                    # for p in e['historyPrice']:
+                    #     h = HistoryPrice(*p)
+                    #     session.merge(h)
 
             session.commit()
 

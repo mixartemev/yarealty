@@ -73,7 +73,7 @@ class McityOffer(Base):
         self.category = category
         self.dealType = dealType
         self.status = status
-        self.bargainTerms_currency = currency
+        self.currency = currency
         self.paymentPeriod = paymentPeriod
         self.floorNumber = floorNumber
         self.totalArea = totalArea
