@@ -1,10 +1,16 @@
+from typing import List
+
 from sqlalchemy import DateTime, func
+from sqlalchemy.orm import session
 
 from models import *
 from models.bc import Bc
+from models.historyPrice import HistoryPrice
+from models.historyPromo import HistoryPromo
 from models.house import House
 from models.location import Location
 from models.newbuilding import Newbuilding
+from models.statsDaily import StatsDaily
 
 
 class McityOffer(Base):
@@ -23,7 +29,7 @@ class McityOffer(Base):
     category = Column(Enum("office", "shoppingArea", "flat", "freeAppointmentObject", "newBuildingFlat",
                            name='category', schema='cian'))
     dealType = Column(Enum("rent", "sale", name='dealType', schema='cian'))
-    status = Column(Enum("published", name='status', schema='cian'))
+    status = Column(Enum("published", "draft", name='status', schema='cian'))
     currency = Column(Enum("rur", "usd", "eur", name='currency', schema='cian'))
     paymentPeriod = Column(Enum("monthly", "annual", name='paymentPeriod', schema='cian'))
     floorNumber = Column(SmallInteger)

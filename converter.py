@@ -77,8 +77,11 @@ def _historyPromo(o: dict) -> Tuple[int, str]:
     )
 
 
-def _historyPrice(o: dict) -> List[Tuple[int, float, int]]:
+def _historyPrice(o: dict) -> List[Tuple[int, float, int]] or None:
     prices = []
+    if not o.get('historyPriceChanges'):
+        print("Obj {} hasn't prices!".format(o['id']))
+        return None
     for ph in o['historyPriceChanges']:
         prices.append((o['id'], ph["changeTime"], ph["priceData"]["price"]))
     return prices

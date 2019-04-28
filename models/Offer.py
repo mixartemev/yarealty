@@ -27,7 +27,7 @@ class Offer(Base):
     category = Column(Enum("office", "shoppingArea", "flat", "freeAppointmentObject", "newBuildingFlat",
                            name='category', schema='cian'))
     dealType = Column(Enum("rent", "sale", name='dealType', schema='cian'))
-    status = Column(Enum("published", name='status', schema='cian'))
+    status = Column(Enum("published", "draft", name='status', schema='cian'))
     currency = Column(Enum("rur", "usd", "eur", name='currency', schema='cian'))
     paymentPeriod = Column(Enum("monthly", "annual", name='paymentPeriod', schema='cian'))
     floorNumber = Column(SmallInteger)
