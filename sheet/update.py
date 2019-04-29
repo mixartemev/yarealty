@@ -86,25 +86,28 @@ def to_mc_sheet(offers: List[McityOffer]):
 
 
 def history(offers: List[Offer]):
-    body = {'values': []}
+    values = [['offer id', 'type', 'deal']]
+    start_date = date(2019, 4, 26)
+    dates = []
+    for n in range((date.today() - start_date).days+1):
+        dates.append(start_date + timedelta(n))
+        values[0].append(dates[n].isoformat())
 
     for o in offers:
-        row = [o.id]
-        start_date = date(2019, 4, 25)
+        row = [o.id, o.category, o.dealType]
         si = 0
-        for n in range(int((date.today() - start_date).days)):
-            cur_date = start_date + timedelta(n)
+        for cur_date in dates:
             sl = o.stats.__len__()
             nearest_date = o.stats[si].date if sl > si else None
             if nearest_date == cur_date:
-                row.append(o.stats[si].stats_daily)
+                row.append(o.stats[si].stats_daily if o.stats[si].stats_daily is not None else '?')
                 si += 1
             else:
                 row.append(None)
 
-        body['values'].append(row)
+        values.append(row)
 
-    return body
+    return {'values': values}
 
 
 def main():
@@ -143,7 +146,7 @@ def main():
 
     # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
     # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
-    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='dynamic!A2:W5000').execute()
+    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='dynamic!A1:W5000').execute()
     # result = service.spreadsheets().values().update(
     #     spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
     # ).execute()
@@ -155,7 +158,7 @@ def main():
 
     result = service.spreadsheets().values().update(
         spreadsheetId=SPREADSHEET_ID,
-        range='dynamic!A2',
+        range='dynamic!A1',
         valueInputOption='USER_ENTERED',
         body=history(offers)
     ).execute()
