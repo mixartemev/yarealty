@@ -1,14 +1,11 @@
-from __future__ import print_function
 import pickle
 import os.path
-from datetime import datetime
 from pprint import pprint
 from typing import List
-
+from datetime import date, timedelta
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-
 # If modifying these scopes, delete the file token.pickle.
 from db import session
 from models.historyPrice import HistoryPrice
@@ -90,12 +87,23 @@ def to_mc_sheet(offers: List[McityOffer]):
 
 def history(offers: List[Offer]):
     body = {'values': []}
+
     for o in offers:
-        stats = session.query(StatsDaily).filter_by(id=o.id, date=datetime.fromisoformat('2019-04-27'))
-        body['values'].append([
-            # o.id,
-            stats.one().stats_daily if stats.count() else 'No'
-        ])
+        row = [o.id]
+        start_date = date(2019, 4, 25)
+        si = 0
+        for n in range(int((date.today() - start_date).days)):
+            cur_date = start_date + timedelta(n)
+            sl = o.stats.__len__()
+            nearest_date = o.stats[si].date if sl > si else None
+            if nearest_date == cur_date:
+                row.append(o.stats[si].stats_daily)
+                si += 1
+            else:
+                row.append(None)
+
+        body['values'].append(row)
+
     return body
 
 
@@ -128,13 +136,14 @@ def main():
     # spreadsheet = service.spreadsheets().create(body=spreadsheet, fields='spreadsheetId').execute()
     # print('Spreadsheet ID: {0}'.format(spreadsheet.get('spreadsheetId')))
 
+    td = (date.today() - date.fromisoformat('2019-04-27')).days
+
     mcityOffers = session.query(McityOffer).all()
     offers = session.query(Offer).all()
 
-    # result = service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
-    # pprint(result)
-    # result = service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
-    # pprint(result)
+    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
+    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
+    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='dynamic!A2:W5000').execute()
     # result = service.spreadsheets().values().update(
     #     spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
     # ).execute()
@@ -146,7 +155,7 @@ def main():
 
     result = service.spreadsheets().values().update(
         spreadsheetId=SPREADSHEET_ID,
-        range='dynamic!D2',
+        range='dynamic!A2',
         valueInputOption='USER_ENTERED',
         body=history(offers)
     ).execute()
