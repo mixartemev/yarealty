@@ -94,7 +94,9 @@ def history(offers: List[Offer]):
         values[0].append(dates[n].isoformat())
 
     for o in offers:
-        row = [o.id, o.category, o.dealType]
+        of_type = 'flat' if o.category == 'flat' else 'commercial'
+        row = ['=HYPERLINK("https://www.cian.ru/{}/{}/{}";"{}")'.format(o.dealType, of_type, o.id, o.id),
+               o.category, o.dealType]
         si = 0
         for cur_date in dates:
             sl = o.stats.__len__()
