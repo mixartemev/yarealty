@@ -89,7 +89,7 @@ def history(offers: List[Offer]):
     values = [['offer id', 'type', 'deal']]
     start_date = date(2019, 4, 26)
     dates = []
-    for n in range((date.today() - start_date).days):
+    for n in range((date.today() - start_date).days + 1):
         dates.append(start_date + timedelta(n))
         values[0].append(dates[n].isoformat())
 
@@ -144,19 +144,19 @@ def main():
     td = (date.today() - date.fromisoformat('2019-04-27')).days
 
     mcityOffers = session.query(McityOffer).all()
-    offers = session.query(Offer).limit(1000).all()
+    offers = session.query(Offer).all()
 
-    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
-    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
+    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
+    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
     service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='dynamic!A1:W5000').execute()
-    result = service.spreadsheets().values().update(
-        spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
-    ).execute()
-    pprint(result)
-    result = service.spreadsheets().values().update(
-        spreadsheetId=SPREADSHEET_ID, range='all!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers)
-    ).execute()
-    pprint(result)
+    # result = service.spreadsheets().values().update(
+    #     spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
+    # ).execute()
+    # pprint(result)
+    # result = service.spreadsheets().values().update(
+    #     spreadsheetId=SPREADSHEET_ID, range='all!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers)
+    # ).execute()
+    # pprint(result)
 
     cells_data = history(offers)
     result = service.spreadsheets().values().update(
@@ -271,64 +271,8 @@ def main():
                 "fields": "userEnteredFormat"
             }
         },
+        # drawing borders
         {
-          "repeatCell": {
-            "range": {
-              "sheetId": dyn_sheet_id,
-              "startRowIndex": 0,
-              "endRowIndex": 1
-            },
-            "cell": {
-              "userEnteredFormat": {
-                # "horizontalAlignment": "CENTER",
-              }
-            },
-            "fields": "userEnteredFormat(horizontalAlignment)"
-          }
-        },
-        {
-          "updateSheetProperties": {
-            "properties": {
-              "sheetId": dyn_sheet_id,
-              "gridProperties": {
-                "frozenColumnCount": 3,
-                "frozenRowCount": 1,
-              }
-            },
-            "fields": "gridProperties.frozenRowCount"
-          }
-        },
-        {
-            "repeatCell": {
-                "range": {
-                  "sheetId": dyn_sheet_id,
-                  "startRowIndex": 0,
-                  "endRowIndex": 1,
-                  "startColumnIndex": 3,
-                  "endColumnIndex": vals[0].__len__()
-                },
-                "cell": {
-                  "userEnteredFormat": {
-                    "numberFormat": {
-                      "type": "DATE",
-                      "pattern": "mm.dd"
-                    }
-                  }
-                },
-                "fields": "userEnteredFormat.numberFormat"
-            }
-        },
-        {
-            "autoResizeDimensions": {
-                "dimensions": {
-                    "sheetId": dyn_sheet_id,
-                    "dimension": "COLUMNS",
-                    "startIndex": 3,
-                    "endIndex": vals[0].__len__()
-                }
-            }
-        },
-        {  # drawing borders
             "updateBorders": {
                 "range": my_range,
                 "top": {
@@ -375,8 +319,54 @@ def main():
                 }
             }
         },
-        {  # coloring weekends: saturday
-            'updateConditionalFormatRule': {
+        # Auto width columns
+        {
+            "autoResizeDimensions": {
+                "dimensions": {
+                    "sheetId": dyn_sheet_id,
+                    "dimension": "COLUMNS",
+                    "startIndex": 3,
+                    "endIndex": vals[0].__len__()
+                }
+            }
+        },
+        # Froze header and left columns
+        {
+          "updateSheetProperties": {
+            "properties": {
+              "sheetId": dyn_sheet_id,
+              "gridProperties": {
+                "frozenColumnCount": 3,
+                "frozenRowCount": 1,
+              }
+            },
+            "fields": "gridProperties.frozenRowCount"
+          }
+        },
+        # Date format
+        {
+            "repeatCell": {
+                "range": {
+                  "sheetId": dyn_sheet_id,
+                  "startRowIndex": 0,
+                  "endRowIndex": 1,
+                  "startColumnIndex": 3,
+                  "endColumnIndex": vals[0].__len__()
+                },
+                "cell": {
+                  "userEnteredFormat": {
+                    "numberFormat": {
+                      "type": "DATE",
+                      "pattern": "mm.dd"
+                    }
+                  }
+                },
+                "fields": "userEnteredFormat.numberFormat"
+            }
+        },
+        # coloring weekends: saturday
+        {
+            'addConditionalFormatRule': {
                 'rule': {
                     'ranges': [dates_range],
                     'booleanRule': {
@@ -394,8 +384,9 @@ def main():
                 },
             }
         },
-        {  # coloring weekends: sunday
-            'updateConditionalFormatRule': {
+        # coloring weekends: sunday
+        {
+            'addConditionalFormatRule': {
                 'rule': {
                     'ranges': [dates_range],
                     'booleanRule': {
@@ -413,8 +404,9 @@ def main():
                 },
             }
         },
-        {  # blackout empties
-            'updateConditionalFormatRule': {
+        # blackout empties
+        {
+            'addConditionalFormatRule': {
                 'rule': {
                     'ranges': [data_range],
                     'booleanRule': {
@@ -428,8 +420,9 @@ def main():
                 },
             }
         },
-        {  # gray Nones
-            'updateConditionalFormatRule': {
+        # gray Nones
+        {
+            'addConditionalFormatRule': {
                 'rule': {
                     'ranges': [data_range],
                     'booleanRule': {
@@ -444,8 +437,9 @@ def main():
                 },
             }
         },
-        {  # coloring gradient
-            "updateConditionalFormatRule": {
+        # coloring gradient
+        {
+            "addConditionalFormatRule": {
                 "rule": {
                     "ranges": [data_range],
                     "gradientRule": {
