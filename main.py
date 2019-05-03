@@ -87,7 +87,7 @@ def main():
                             offer: Offer = session.query(Offer).get(e['offer'][0])
                             session.merge(Offer(*e['offer']))
 
-                            stats_exists = offer and offer.stats[-1].date == date.today()
+                            stats_exists = offer and offer.stats and offer.stats[-1].date == date.today()
                             if e['statsDaily'][1] is None or e['statsDaily'][1] is None:
                                 print(offer_type, deal_type, current_page, 'Stats None')
                                 ok = False
