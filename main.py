@@ -66,7 +66,7 @@ def main():
     args = parser.parse_args()
 
     try:
-        for offer_type in ['flat']:
+        for offer_type in ['office', 'flat']:
             for deal_type in ['rent', 'sale']:
                 print(offer_type, deal_type)
                 current_page = 1
