@@ -14,7 +14,7 @@ def _read_cookies() -> dict:
         return {cookie.split(" ", 2)[0]: cookie.split(" ", 2)[1].replace('\n', '') for cookie in f}
 
 
-def make(args, page_number: int) -> dict:
+def make(args, offer_type: str, deal_type: str, page_number: int) -> dict:
     headers = {
         "Accept": "*/*",
         "Authorization": "simple eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM3NDMxOTA5LWQ3OWQtNGUwMy04OGRjLWE3"
@@ -25,7 +25,7 @@ def make(args, page_number: int) -> dict:
     cookies = _read_cookies()
 
     third = args.user_id if args.user_id else args.bs_center_id
-    url = MCITY_URL if args.user_id == 9383110 else (OFFICE_URL if args.offer_type == 'office' else FLAT_URL)
-    url = url.format(args.deal_type, args.offer_type, page_number, third)
+    url = MCITY_URL if args.user_id == 9383110 else (OFFICE_URL if offer_type == 'office' else FLAT_URL)
+    url = url.format(deal_type, offer_type, page_number, third)
     r = requests.get(url, headers=headers, cookies=cookies)
     return r.json()

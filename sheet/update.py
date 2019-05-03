@@ -89,7 +89,7 @@ def history(offers: List[Offer]):
     values = [['offer id', 'type', 'deal']]
     start_date = date(2019, 4, 26)
     dates = []
-    for n in range((date.today() - start_date).days+1):
+    for n in range((date.today() - start_date).days):
         dates.append(start_date + timedelta(n))
         values[0].append(dates[n].isoformat())
 
@@ -144,27 +144,348 @@ def main():
     td = (date.today() - date.fromisoformat('2019-04-27')).days
 
     mcityOffers = session.query(McityOffer).all()
-    offers = session.query(Offer).all()
+    offers = session.query(Offer).limit(1000).all()
 
-    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
-    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
+    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
+    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
     service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='dynamic!A1:W5000').execute()
-    # result = service.spreadsheets().values().update(
-    #     spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
-    # ).execute()
-    # pprint(result)
-    # result = service.spreadsheets().values().update(
-    #     spreadsheetId=SPREADSHEET_ID, range='all!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers)
-    # ).execute()
-    # pprint(result)
+    result = service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
+    ).execute()
+    pprint(result)
+    result = service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID, range='all!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers)
+    ).execute()
+    pprint(result)
 
+    cells_data = history(offers)
     result = service.spreadsheets().values().update(
         spreadsheetId=SPREADSHEET_ID,
         range='dynamic!A1',
         valueInputOption='USER_ENTERED',
-        body=history(offers)
+        body=cells_data
     ).execute()
     pprint(result)
+
+    vals = cells_data.get('values')
+    dyn_sheet_id = 656058326
+    my_range = {
+        'sheetId': dyn_sheet_id,
+        'startRowIndex': 0,
+        'endRowIndex': vals.__len__(),
+        'startColumnIndex': 0,
+        'endColumnIndex': vals[0].__len__(),
+    }
+    dates_range = {
+        'sheetId': dyn_sheet_id,
+        'startRowIndex': 0,
+        'endRowIndex': 1,
+        'startColumnIndex': 3,
+        'endColumnIndex': vals[0].__len__(),
+    }
+    data_range = {
+        'sheetId': dyn_sheet_id,
+        'startRowIndex': 1,
+        'endRowIndex': vals.__len__(),
+        'startColumnIndex': 3,
+        'endColumnIndex': vals[0].__len__(),
+    }
+
+    requests = [
+        # {
+        #     "updateCells": {
+        #         "rows": [
+        #             {  # object(GridData)
+        #                 "values": [
+        #                     {
+        #                         "userEnteredValue": {  # object(ExtendedValue)
+        #                             # "numberValue": 11,
+        #                             "stringValue": 'string',
+        #                             # "boolValue": boolean,
+        #                             # "formulaValue": string,
+        #                             # "errorValue": {
+        #                             #   "type": enum(ErrorType),
+        #                             #   "message": string
+        #                             # }
+        #                         },
+        #                         # "effectiveValue": { # This field is read-only.
+        #                         #     object(ExtendedValue)
+        #                         # },
+        #                         # "formattedValue": string, # This field is read-only.
+        #                         "userEnteredFormat": {
+        #                             "backgroundColor": {"red": 0.5},
+        #                             # "numberFormat": {
+        #                             #   object(NumberFormat)
+        #                             # },
+        #                             # "borders": {
+        #                             #   object(Borders)
+        #                             # },
+        #                             # "padding": {
+        #                             #   object(Padding)
+        #                             # },
+        #                             # "horizontalAlignment": enum(HorizontalAlign),
+        #                             # "verticalAlignment": enum(VerticalAlign),
+        #                             # "wrapStrategy": enum(WrapStrategy),
+        #                             # "textDirection": enum(TextDirection),
+        #                             # "textFormat": {
+        #                             #   object(TextFormat)
+        #                             # },
+        #                             "hyperlinkDisplayType": 'LINKED',
+        #                             # "textRotation": {
+        #                             #   object(TextRotation)
+        #                             # }
+        #                         },
+        #                         # "effectiveFormat": { # This field is read-only.
+        #                         #     object(CellFormat)
+        #                         # },
+        #                         # "hyperlink": 'ya.ru', # This field is read-only.
+        #                         "textFormatRuns": [
+        #                             {
+        #                                 "startIndex": 0,
+        #                                 "format": {
+        #                                     "foregroundColor": {"blue": 0.5},
+        #                                     "bold": True,
+        #                                     "italic": True,
+        #                                     "strikethrough": False,
+        #                                     # "underline": True
+        #                                 }
+        #                             }
+        #                         ],
+        #                         # "dataValidation": {
+        #                         #     object(DataValidationRule)
+        #                         # },
+        #                         # "pivotTable": {
+        #                         #     object(PivotTable)
+        #                         # }
+        #                     }
+        #                 ]
+        #             }
+        #         ],
+        #         "fields": '*',
+        #         "range": my_range
+        #     },
+        # },
+        {
+            "updateCells": {
+                "range": my_range,
+                "fields": "userEnteredFormat"
+            }
+        },
+        {
+          "repeatCell": {
+            "range": {
+              "sheetId": dyn_sheet_id,
+              "startRowIndex": 0,
+              "endRowIndex": 1
+            },
+            "cell": {
+              "userEnteredFormat": {
+                # "horizontalAlignment": "CENTER",
+              }
+            },
+            "fields": "userEnteredFormat(horizontalAlignment)"
+          }
+        },
+        {
+          "updateSheetProperties": {
+            "properties": {
+              "sheetId": dyn_sheet_id,
+              "gridProperties": {
+                "frozenColumnCount": 3,
+                "frozenRowCount": 1,
+              }
+            },
+            "fields": "gridProperties.frozenRowCount"
+          }
+        },
+        {
+            "repeatCell": {
+                "range": {
+                  "sheetId": dyn_sheet_id,
+                  "startRowIndex": 0,
+                  "endRowIndex": 1,
+                  "startColumnIndex": 3,
+                  "endColumnIndex": vals[0].__len__()
+                },
+                "cell": {
+                  "userEnteredFormat": {
+                    "numberFormat": {
+                      "type": "DATE",
+                      "pattern": "mm.dd"
+                    }
+                  }
+                },
+                "fields": "userEnteredFormat.numberFormat"
+            }
+        },
+        {
+            "autoResizeDimensions": {
+                "dimensions": {
+                    "sheetId": dyn_sheet_id,
+                    "dimension": "COLUMNS",
+                    "startIndex": 3,
+                    "endIndex": vals[0].__len__()
+                }
+            }
+        },
+        {  # drawing borders
+            "updateBorders": {
+                "range": my_range,
+                "top": {
+                    "style": "SOLID",
+                    "width": 2,
+                    "color": {
+                        "red": 0
+                    },
+                },
+                "bottom": {
+                    "style": "SOLID",
+                    "width": 2,
+                    "color": {
+                        "blue": 0
+                    },
+                },
+                "left": {
+                    "style": "SOLID",
+                    "width": 2,
+                    "color": {
+                        "red": 0
+                    },
+                },
+                "right": {
+                    "style": "SOLID",
+                    "width": 2,
+                    "color": {
+                        "blue": 0
+                    },
+                },
+                "innerHorizontal": {
+                    "style": "SOLID",
+                    "width": 1,
+                    "color": {
+                        "blue": 0
+                    },
+                },
+                "innerVertical": {
+                    "style": "SOLID",
+                    "width": 1,
+                    "color": {
+                        "blue": 0
+                    },
+                }
+            }
+        },
+        {  # coloring weekends: saturday
+            'updateConditionalFormatRule': {
+                'rule': {
+                    'ranges': [dates_range],
+                    'booleanRule': {
+                        'condition': {
+                            'type': 'CUSTOM_FORMULA',
+                            'values': [{
+                                'userEnteredValue':
+                                    '=EQ(WEEKDAY(INDIRECT(ADDRESS(1;COLUMN())));7)'
+                            }]
+                        },
+                        'format': {
+                            "backgroundColor": {'red': 0.957, 'green': 0.8, 'blue': 0.8},
+                        }
+                    }
+                },
+            }
+        },
+        {  # coloring weekends: sunday
+            'updateConditionalFormatRule': {
+                'rule': {
+                    'ranges': [dates_range],
+                    'booleanRule': {
+                        'condition': {
+                            'type': 'CUSTOM_FORMULA',
+                            'values': [{
+                                'userEnteredValue':
+                                    '=EQ(WEEKDAY(INDIRECT(ADDRESS(1;COLUMN())));1)'
+                            }]
+                        },
+                        'format': {
+                            "backgroundColor": {'red': 0.92, 'green': 0.6, 'blue': 0.6},
+                        }
+                    }
+                },
+            }
+        },
+        {  # blackout empties
+            'updateConditionalFormatRule': {
+                'rule': {
+                    'ranges': [data_range],
+                    'booleanRule': {
+                        'condition': {
+                            'type': 'BLANK',
+                        },
+                        'format': {
+                            "backgroundColor": {'red': 0},
+                        }
+                    }
+                },
+            }
+        },
+        {  # gray Nones
+            'updateConditionalFormatRule': {
+                'rule': {
+                    'ranges': [data_range],
+                    'booleanRule': {
+                        'condition': {
+                            'type': 'TEXT_EQ',
+                            'values': [{"userEnteredValue": '?'}]
+                        },
+                        'format': {
+                            "backgroundColor": {'red': 0.4, 'green': 0.4, 'blue': 0.4},
+                        }
+                    }
+                },
+            }
+        },
+        {  # coloring gradient
+            "updateConditionalFormatRule": {
+                "rule": {
+                    "ranges": [data_range],
+                    "gradientRule": {
+                        "maxpoint": {
+                            "color": {
+                                "red": 0.945,
+                                "green": 0.153,
+                                "blue": 0.067
+                            },
+                            "type": "MAX"
+                        },
+                        "midpoint": {
+                            "color": {
+                                "red": 1,
+                                "green": 1,
+                                "blue": 0.1
+                            },
+                            "type": "PERCENT",
+                            "value": '7'
+                        },
+                        "minpoint": {
+                            "color": {
+                                "red": 0,
+                                "green": 0.7647,
+                                "blue": 1
+                            },
+                            "type": "MIN"
+                        }
+                    }
+                }
+            }
+        },
+    ]
+    body = {
+        'requests': requests
+    }
+
+    response = service.spreadsheets() \
+        .batchUpdate(spreadsheetId=SPREADSHEET_ID, body=body).execute()
+    print('{0} cells updated.'.format(len(response.get('replies'))))
 
 
 if __name__ == '__main__':
