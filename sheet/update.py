@@ -19,6 +19,12 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 # The ID and range of a sample spreadsheet.
 SPREADSHEET_ID = '1lPFc1p_5TNSxYOtJ4hSqcSMAiUig4slRQTdMmgJroic'
 
+PROMO_COLORS = {
+    "top3": "red",
+    "premium": "green",
+    "paid": "blue"
+}
+
 
 def to_sheet(offers: List[Offer]):
     body = {'values': []}
@@ -87,29 +93,45 @@ def to_mc_sheet(offers: List[McityOffer]):
 
 def history(offers: List[Offer]):
     values = [['offer id', 'type', 'deal']]
-    start_date = date(2019, 4, 26)
+    start_date = date(2019, 4, 25)
     dates = []
-    for n in range((date.today() - start_date).days + 1):
-        dates.append(start_date + timedelta(n))
-        values[0].append(dates[n].isoformat())
+    promo_data = []
+    for n in range((date.today() - start_date).days):
+        dt = start_date + timedelta(n)
+        if session.query(StatsDaily).filter_by(date=dt).count():
+            dates.append(dt)
+            values[0].append(dt.isoformat())
 
     for o in offers:
         of_type = 'flat' if o.category == 'flat' else 'commercial'
         row = ['=HYPERLINK("https://www.cian.ru/{}/{}/{}";"{}")'.format(o.dealType, of_type, o.id, o.id),
                o.category, o.dealType]
+        promo_row_values = []
         si = 0
         for cur_date in dates:
             sl = o.stats.__len__()
             nearest_date = o.stats[si].date if sl > si else None
             if nearest_date == cur_date:
                 row.append(o.stats[si].stats_daily if o.stats[si].stats_daily is not None else '?')
+                promo: HistoryPromo = session.query(HistoryPromo)\
+                    .filter(HistoryPromo.date <= cur_date.isoformat())\
+                    .order_by(HistoryPromo.date.desc())\
+                    .first()
+
+                promo_row_values.append({"userEnteredFormat": {"borders": {"bottom": {
+                            "style": "SOLID",
+                            "width": 3,
+                            "color": {PROMO_COLORS[promo.services]: 1},
+                        }}}})
                 si += 1
             else:
                 row.append(None)
+                promo_row_values.append({})
 
         values.append(row)
+        promo_data.append({"values": promo_row_values})
 
-    return {'values': values}
+    return [{'values': values}, promo_data]
 
 
 def main():
@@ -141,10 +163,9 @@ def main():
     # spreadsheet = service.spreadsheets().create(body=spreadsheet, fields='spreadsheetId').execute()
     # print('Spreadsheet ID: {0}'.format(spreadsheet.get('spreadsheetId')))
 
-    td = (date.today() - date.fromisoformat('2019-04-27')).days
-
     mcityOffers = session.query(McityOffer).all()
-    offers = session.query(Offer).all()
+    # todo from stats
+    offers = session.query(Offer).all()  # .limit(100)
 
     # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
     # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
@@ -158,7 +179,8 @@ def main():
     # ).execute()
     # pprint(result)
 
-    cells_data = history(offers)
+    history_offers = history(offers)
+    cells_data = history_offers[0]
     result = service.spreadsheets().values().update(
         spreadsheetId=SPREADSHEET_ID,
         range='dynamic!A1',
@@ -169,29 +191,52 @@ def main():
 
     vals = cells_data.get('values')
     dyn_sheet_id = 656058326
+    data_width = vals[0].__len__()
     my_range = {
         'sheetId': dyn_sheet_id,
         'startRowIndex': 0,
         'endRowIndex': vals.__len__(),
         'startColumnIndex': 0,
-        'endColumnIndex': vals[0].__len__(),
+        'endColumnIndex': data_width,
     }
     dates_range = {
         'sheetId': dyn_sheet_id,
         'startRowIndex': 0,
         'endRowIndex': 1,
         'startColumnIndex': 3,
-        'endColumnIndex': vals[0].__len__(),
+        'endColumnIndex': data_width,
     }
     data_range = {
         'sheetId': dyn_sheet_id,
         'startRowIndex': 1,
         'endRowIndex': vals.__len__(),
         'startColumnIndex': 3,
-        'endColumnIndex': vals[0].__len__(),
+        'endColumnIndex': data_width,
+    }
+    info_range = {
+        'sheetId': dyn_sheet_id,
+        'startRowIndex': 0,
+        'endRowIndex': vals.__len__(),
+        'startColumnIndex': 0,
+        'endColumnIndex': 3,
+    }
+    bold_border = {
+        "style": "SOLID",
+        "width": 2,
+        "color": {},
+    }
+    norm_border = {
+        "style": "SOLID",
+        "width": 1,
+        "color": {},
     }
 
     requests = [
+        {"updateCells": {
+            "rows": history_offers[1],
+            "range": data_range,
+            "fields": 'userEnteredFormat'
+        }},
         # {
         #     "updateCells": {
         #         "rows": [
@@ -265,69 +310,23 @@ def main():
         #         "range": my_range
         #     },
         # },
-        {
-            "updateCells": {
-                "range": my_range,
-                "fields": "userEnteredFormat"
-            }
-        },
+
         # drawing borders
         {
             "updateBorders": {
-                "range": my_range,
-                "top": {
-                    "style": "SOLID",
-                    "width": 2,
-                    "color": {
-                        "red": 0
-                    },
-                },
-                "bottom": {
-                    "style": "SOLID",
-                    "width": 2,
-                    "color": {
-                        "blue": 0
-                    },
-                },
-                "left": {
-                    "style": "SOLID",
-                    "width": 2,
-                    "color": {
-                        "red": 0
-                    },
-                },
-                "right": {
-                    "style": "SOLID",
-                    "width": 2,
-                    "color": {
-                        "blue": 0
-                    },
-                },
-                "innerHorizontal": {
-                    "style": "SOLID",
-                    "width": 1,
-                    "color": {
-                        "blue": 0
-                    },
-                },
-                "innerVertical": {
-                    "style": "SOLID",
-                    "width": 1,
-                    "color": {
-                        "blue": 0
-                    },
-                }
+                "range": info_range,
+                "right": bold_border,
+                "innerHorizontal": norm_border,
+                "innerVertical": norm_border
             }
         },
-        # Auto width columns
         {
-            "autoResizeDimensions": {
-                "dimensions": {
-                    "sheetId": dyn_sheet_id,
-                    "dimension": "COLUMNS",
-                    "startIndex": 3,
-                    "endIndex": vals[0].__len__()
-                }
+            "updateBorders": {
+                "range": my_range,
+                "top": bold_border,
+                "bottom": bold_border,
+                "left": bold_border,
+                "right": bold_border,
             }
         },
         # Froze header and left columns
@@ -351,7 +350,7 @@ def main():
                   "startRowIndex": 0,
                   "endRowIndex": 1,
                   "startColumnIndex": 3,
-                  "endColumnIndex": vals[0].__len__()
+                  "endColumnIndex": data_width
                 },
                 "cell": {
                   "userEnteredFormat": {
@@ -362,6 +361,17 @@ def main():
                   }
                 },
                 "fields": "userEnteredFormat.numberFormat"
+            }
+        },
+        # Auto width columns
+        {
+            "autoResizeDimensions": {
+                "dimensions": {
+                    "sheetId": dyn_sheet_id,
+                    "dimension": "COLUMNS",
+                    "startIndex": 3,
+                    "endIndex": data_width
+                }
             }
         },
         # coloring weekends: saturday
@@ -476,6 +486,13 @@ def main():
     body = {
         'requests': requests
     }
+
+    clear_format = {'requests': [{"deleteConditionalFormatRule": {"sheetId": dyn_sheet_id}}]}
+    for i in range(5):
+        response = service.spreadsheets() \
+            .batchUpdate(spreadsheetId=SPREADSHEET_ID, body=clear_format).execute()
+        print('{0} cells updated.'.format(len(response.get('replies'))))
+        print(response)
 
     response = service.spreadsheets() \
         .batchUpdate(spreadsheetId=SPREADSHEET_ID, body=body).execute()
