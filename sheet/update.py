@@ -20,9 +20,9 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 SPREADSHEET_ID = '1lPFc1p_5TNSxYOtJ4hSqcSMAiUig4slRQTdMmgJroic'
 
 PROMO_COLORS = {
-    "top3": "red",
-    "premium": "green",
-    "paid": "blue"
+    "top3": {"red": 0.65},
+    "premium": {"green": 0.5},
+    "paid": {"blue": 0.9}
 }
 
 
@@ -114,15 +114,16 @@ def history(offers: List[Offer]):
             if nearest_date == cur_date:
                 row.append(o.stats[si].stats_daily if o.stats[si].stats_daily is not None else '?')
                 promo: HistoryPromo = session.query(HistoryPromo)\
-                    .filter(HistoryPromo.date <= cur_date.isoformat())\
+                    .filter(HistoryPromo.date <= cur_date.isoformat(), HistoryPromo.id == o.id)\
                     .order_by(HistoryPromo.date.desc())\
                     .first()
 
-                promo_row_values.append({"userEnteredFormat": {"borders": {"bottom": {
-                            "style": "SOLID",
-                            "width": 3,
-                            "color": {PROMO_COLORS[promo.services]: 1},
-                        }}}})
+                promo_row_values.append(({"userEnteredFormat": {"textFormat": {
+                            "foregroundColor": PROMO_COLORS[promo.services],
+                            "bold": True
+                        }}} if promo.services != 'free' else {}) if promo else {"userEnteredFormat": {"textFormat": {
+                            "strikethrough": True
+                        }}})
                 si += 1
             else:
                 row.append(None)
@@ -165,7 +166,7 @@ def main():
 
     mcityOffers = session.query(McityOffer).all()
     # todo from stats
-    offers = session.query(Offer).all()  # .limit(100)
+    offers = session.query(Offer).all()  # .offset(500).limit(300)
 
     # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
     # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
@@ -441,7 +442,7 @@ def main():
                             'values': [{"userEnteredValue": '?'}]
                         },
                         'format': {
-                            "backgroundColor": {'red': 0.4, 'green': 0.4, 'blue': 0.4},
+                            "backgroundColor": {'red': 0.5, 'green': 0.5, 'blue': 0.5},
                         }
                     }
                 },
@@ -455,9 +456,9 @@ def main():
                     "gradientRule": {
                         "maxpoint": {
                             "color": {
-                                "red": 0.945,
-                                "green": 0.153,
-                                "blue": 0.067
+                                "red": 1,
+                                "green": 0.3,
+                                "blue": 0.2
                             },
                             "type": "MAX"
                         },
@@ -465,15 +466,15 @@ def main():
                             "color": {
                                 "red": 1,
                                 "green": 1,
-                                "blue": 0.1
+                                "blue": 0.2
                             },
                             "type": "PERCENT",
                             "value": '7'
                         },
                         "minpoint": {
                             "color": {
-                                "red": 0,
-                                "green": 0.7647,
+                                "red": 0.15,
+                                "green": 0.9,
                                 "blue": 1
                             },
                             "type": "MIN"
