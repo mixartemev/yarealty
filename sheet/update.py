@@ -92,7 +92,7 @@ def to_mc_sheet(offers: List[McityOffer]):
 
 
 def history(offers: List[Offer]):
-    values = [['offer id', 'type', 'deal']]
+    values = [['offer id', 'user', 'type', 'deal', 'average']]
     start_date = date(2019, 4, 25)
     dates = []
     promo_data = []
@@ -104,8 +104,14 @@ def history(offers: List[Offer]):
 
     for o in offers:
         of_type = 'flat' if o.category == 'flat' else 'commercial'
-        row = ['=HYPERLINK("https://www.cian.ru/{}/{}/{}";"{}")'.format(o.dealType, of_type, o.id, o.id),
-               o.category, o.dealType]
+        row_num = values.__len__()+1
+        row = [
+            '=HYPERLINK("https://www.cian.ru/{}/{}/{}";"{}")'.format(o.dealType, of_type, o.id, o.id),
+            '=HYPERLINK("https://www.cian.ru/company/{}";"{}")'.format(o.cianUserId, o.cianUserId),
+            o.category,
+            o.dealType,
+            '=AVERAGE(F{}:{})'.format(row_num, row_num)
+        ]
         promo_row_values = []
         si = 0
         for cur_date in dates:
@@ -166,7 +172,7 @@ def main():
 
     mcityOffers = session.query(McityOffer).all()
     # todo from stats
-    offers = session.query(Offer).all()  # .offset(500).limit(300)
+    offers = session.query(Offer).all()  # .offset(500).limit(100)
 
     # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
     # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
@@ -193,6 +199,7 @@ def main():
     vals = cells_data.get('values')
     dyn_sheet_id = 656058326
     data_width = vals[0].__len__()
+    fc = 5
     my_range = {
         'sheetId': dyn_sheet_id,
         'startRowIndex': 0,
@@ -204,14 +211,21 @@ def main():
         'sheetId': dyn_sheet_id,
         'startRowIndex': 0,
         'endRowIndex': 1,
-        'startColumnIndex': 3,
+        'startColumnIndex': fc,
         'endColumnIndex': data_width,
     }
     data_range = {
         'sheetId': dyn_sheet_id,
         'startRowIndex': 1,
         'endRowIndex': vals.__len__(),
-        'startColumnIndex': 3,
+        'startColumnIndex': fc,
+        'endColumnIndex': data_width,
+    }
+    grad_range = {
+        'sheetId': dyn_sheet_id,
+        'startRowIndex': 1,
+        'endRowIndex': vals.__len__(),
+        'startColumnIndex': fc-1,
         'endColumnIndex': data_width,
     }
     info_range = {
@@ -219,7 +233,7 @@ def main():
         'startRowIndex': 0,
         'endRowIndex': vals.__len__(),
         'startColumnIndex': 0,
-        'endColumnIndex': 3,
+        'endColumnIndex': fc,
     }
     bold_border = {
         "style": "SOLID",
@@ -336,7 +350,7 @@ def main():
             "properties": {
               "sheetId": dyn_sheet_id,
               "gridProperties": {
-                "frozenColumnCount": 3,
+                "frozenColumnCount": fc,
                 "frozenRowCount": 1,
               }
             },
@@ -350,7 +364,7 @@ def main():
                   "sheetId": dyn_sheet_id,
                   "startRowIndex": 0,
                   "endRowIndex": 1,
-                  "startColumnIndex": 3,
+                  "startColumnIndex": fc,
                   "endColumnIndex": data_width
                 },
                 "cell": {
@@ -370,7 +384,7 @@ def main():
                 "dimensions": {
                     "sheetId": dyn_sheet_id,
                     "dimension": "COLUMNS",
-                    "startIndex": 3,
+                    "startIndex": fc,
                     "endIndex": data_width
                 }
             }
@@ -452,7 +466,7 @@ def main():
         {
             "addConditionalFormatRule": {
                 "rule": {
-                    "ranges": [data_range],
+                    "ranges": [grad_range],
                     "gradientRule": {
                         "maxpoint": {
                             "color": {
