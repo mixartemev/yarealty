@@ -168,5 +168,4 @@ def push(ok=True):
 
 
 if __name__ == '__main__':
-    # main()
-    push()
+    main()
