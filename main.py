@@ -154,8 +154,9 @@ def push(ok=True):
     body = {
       "notification": {
         "title": title,
-        "body": mess,
+        "body": mess + ' ' + date.today().isoformat(),
         "icon": "https://avatars1.githubusercontent.com/u/5181924?s=460&v=4",
+        "topic": "excel",
         "click_action": act
       },
       "to": tok
