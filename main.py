@@ -2,6 +2,9 @@ import argparse
 import time
 from datetime import date
 from random import randint
+
+import requests
+
 from models.statsDaily import StatsDaily
 from models.historyPrice import HistoryPrice
 from models.historyPromo import HistoryPromo
@@ -134,13 +137,36 @@ def main():
 
     except Exception as e:
         print(e)
-        print("Unknown exception, waiting 60 seconds.")
-        time.sleep(60)
+        print("Unknown exception.. Push: {}".format(push(False)))
+        exit()
     except KeyboardInterrupt:
         print("Finishing...")
         exit()
-    print("Done")
+    print("Done. Push: {}".format(push()))
+
+
+def push(ok=True):
+    url = 'https://fcm.googleapis.com/fcm/send'
+    title = 'Мегапарсёр отработал'
+    mess = 'Данные успешно спизджены полностью' if ok else 'Пизда рулю. Все сломалось'
+    act = 'https://docs.google.com/spreadsheets/d/1lPFc1p_5TNSxYOtJ4hSqcSMAiUig4slRQTdMmgJroic/edit#gid=656058326'
+    tok = 'cDBL0-jYBWQ:APA91bG294ZcB0TkztsUkt-hBayeC6kPnYBzY6swFSEgNtJGdB5ht1xm-Kq_7VokWMLH35ecV9SbR0PMm7qrxmXtTO8tPkNUJ09F1j2m0B923BYrh8mOzQGubb3xdNHR249mvwrWM-fb'
+    body = {
+      "notification": {
+        "title": title,
+        "body": mess,
+        "icon": "https://avatars1.githubusercontent.com/u/5181924?s=460&v=4",
+        "click_action": act
+      },
+      "to": tok
+    }
+    headers = {
+        "Authorization": "key=AAAAdDA0FEM:APA91bGovsJXVAm0R3P5DNBZsWbvwbXacLmjvlDst2t3o8VNWUhJ63UUgNeZfcTZXuWQw9LWPHGJt5dn20hDBEDt-cjmw91i_ncfg9qE5eqifRNULeEbMPQgMRUpLw4yZrUCyeluO2TZ",
+        "Content-Type": "application/json"
+    }
+    return requests.post(url, json=body, headers=headers).status_code
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    push()
