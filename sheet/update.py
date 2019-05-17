@@ -50,7 +50,7 @@ def to_sheet(offers: List[Offer]):
             o.userTrust,
             o.isPro,
             o.publishTerms_autoprolong,
-            o.prices[-1].price,
+            o.prices[-1].price if o.prices else None,
             o.promos[-1].services if o.promos else None,
             o.stats[-1].stats_total if o.stats else None,
             o.stats[-1].stats_daily if o.stats else None,
@@ -63,6 +63,7 @@ def to_mc_sheet(offers: List[McityOffer]):
     for o in offers:
         of_type = 'flat' if o.category == 'flat' else 'commercial'
         stats: StatsDaily = session.query(StatsDaily).order_by(StatsDaily.date.desc()).filter_by(id=o.id).first()
+        price: HistoryPrice = session.query(HistoryPrice).order_by(HistoryPrice.time.desc()).filter_by(id=o.id).first()
         body['values'].append([
             '=HYPERLINK("https://www.cian.ru/{}/{}/{}";"{}")'.format(o.dealType, of_type, o.id, o.id),
             '=HYPERLINK("https://www.mcity.ru/{}";"{}")'.format(o.idd, o.idd) if o.idd else None,
@@ -83,7 +84,7 @@ def to_mc_sheet(offers: List[McityOffer]):
             o.userTrust,
             o.isPro,
             o.publishTerms_autoprolong,
-            session.query(HistoryPrice).order_by(HistoryPrice.time.desc()).filter_by(id=o.id).first().price,
+            price.price if price else None,
             session.query(HistoryPromo).order_by(HistoryPromo.date.desc()).filter_by(id=o.id).first().services,
             stats.stats_total if stats else None,
             stats.stats_daily if stats else None
@@ -138,7 +139,7 @@ def history(offers: List[Offer]):
         values.append(row)
         promo_data.append({"values": promo_row_values})
 
-    return [{'values': values}, promo_data]
+    return [values, promo_data]
 
 
 def main():
@@ -176,7 +177,7 @@ def main():
 
     # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
     # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
-    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='dynamic!A1:W5000').execute()
+    # # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='dynamic!A1:W5000').execute()
     # result = service.spreadsheets().values().update(
     #     spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
     # ).execute()
@@ -187,16 +188,22 @@ def main():
     # pprint(result)
 
     history_offers = history(offers)
-    cells_data = history_offers[0]
-    result = service.spreadsheets().values().update(
-        spreadsheetId=SPREADSHEET_ID,
-        range='dynamic!A1',
-        valueInputOption='USER_ENTERED',
-        body=cells_data
-    ).execute()
-    pprint(result)
+    vals = history_offers[0]
+    batch = 0
+    while True:
+        new_batch = batch+100
+        result = service.spreadsheets().values().update(
+            spreadsheetId=SPREADSHEET_ID,
+            range='dynamic!A'+(batch+1),
+            valueInputOption='USER_ENTERED',
+            body={'values': vals[batch:new_batch]}
+        ).execute()
+        pprint(result)
+        if vals.__len__() > new_batch:
+            batch = new_batch
+        else:
+            break
 
-    vals = cells_data.get('values')
     dyn_sheet_id = 656058326
     data_width = vals[0].__len__()
     fc = 5
@@ -246,6 +253,13 @@ def main():
         "color": {},
     }
 
+    # clear_format = {'requests': [{"deleteConditionalFormatRule": {"sheetId": dyn_sheet_id}}]}
+    # for i in range(5):
+    #     response = service.spreadsheets() \
+    #         .batchUpdate(spreadsheetId=SPREADSHEET_ID, body=clear_format).execute()
+    #     print('{0} cells updated.'.format(len(response.get('replies'))))
+    #     print(response)
+
     requests = [
         {"updateCells": {
             "rows": history_offers[1],
@@ -268,10 +282,6 @@ def main():
         #                             #   "message": string
         #                             # }
         #                         },
-        #                         # "effectiveValue": { # This field is read-only.
-        #                         #     object(ExtendedValue)
-        #                         # },
-        #                         # "formattedValue": string, # This field is read-only.
         #                         "userEnteredFormat": {
         #                             "backgroundColor": {"red": 0.5},
         #                             # "numberFormat": {
@@ -290,30 +300,7 @@ def main():
         #                             # "textFormat": {
         #                             #   object(TextFormat)
         #                             # },
-        #                             "hyperlinkDisplayType": 'LINKED',
-        #                             # "textRotation": {
-        #                             #   object(TextRotation)
-        #                             # }
         #                         },
-        #                         # "effectiveFormat": { # This field is read-only.
-        #                         #     object(CellFormat)
-        #                         # },
-        #                         # "hyperlink": 'ya.ru', # This field is read-only.
-        #                         "textFormatRuns": [
-        #                             {
-        #                                 "startIndex": 0,
-        #                                 "format": {
-        #                                     "foregroundColor": {"blue": 0.5},
-        #                                     "bold": True,
-        #                                     "italic": True,
-        #                                     "strikethrough": False,
-        #                                     # "underline": True
-        #                                 }
-        #                             }
-        #                         ],
-        #                         # "dataValidation": {
-        #                         #     object(DataValidationRule)
-        #                         # },
         #                         # "pivotTable": {
         #                         #     object(PivotTable)
         #                         # }
@@ -498,19 +485,8 @@ def main():
             }
         },
     ]
-    body = {
-        'requests': requests
-    }
-
-    clear_format = {'requests': [{"deleteConditionalFormatRule": {"sheetId": dyn_sheet_id}}]}
-    for i in range(5):
-        response = service.spreadsheets() \
-            .batchUpdate(spreadsheetId=SPREADSHEET_ID, body=clear_format).execute()
-        print('{0} cells updated.'.format(len(response.get('replies'))))
-        print(response)
-
     response = service.spreadsheets() \
-        .batchUpdate(spreadsheetId=SPREADSHEET_ID, body=body).execute()
+        .batchUpdate(spreadsheetId=SPREADSHEET_ID, body={'requests': requests}).execute()
     print('{0} cells updated.'.format(len(response.get('replies'))))
 
 
