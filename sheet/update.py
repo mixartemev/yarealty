@@ -175,17 +175,17 @@ def main():
     # todo from stats
     offers = session.query(Offer).all()  # .offset(500).limit(100)
 
-    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
-    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
-    # # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='dynamic!A1:W5000').execute()
-    # result = service.spreadsheets().values().update(
-    #     spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
-    # ).execute()
-    # pprint(result)
-    # result = service.spreadsheets().values().update(
-    #     spreadsheetId=SPREADSHEET_ID, range='all!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers)
-    # ).execute()
-    # pprint(result)
+    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
+    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
+    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='dynamic!A1:W5000').execute()
+    result = service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
+    ).execute()
+    pprint(result)
+    result = service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID, range='all!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers)
+    ).execute()
+    pprint(result)
 
     history_offers = history(offers)
     vals = history_offers[0]
@@ -194,7 +194,7 @@ def main():
         new_batch = batch+100
         result = service.spreadsheets().values().update(
             spreadsheetId=SPREADSHEET_ID,
-            range='dynamic!A'+(batch+1),
+            range='dynamic!A'+str(batch+1),
             valueInputOption='USER_ENTERED',
             body={'values': vals[batch:new_batch]}
         ).execute()
@@ -228,13 +228,13 @@ def main():
         'startColumnIndex': fc,
         'endColumnIndex': data_width,
     }
-    grad_range = {
-        'sheetId': dyn_sheet_id,
-        'startRowIndex': 1,
-        'endRowIndex': vals.__len__(),
-        'startColumnIndex': fc-1,
-        'endColumnIndex': data_width,
-    }
+    # grad_range = {
+    #     'sheetId': dyn_sheet_id,
+    #     'startRowIndex': 1,
+    #     'endRowIndex': vals.__len__(),
+    #     'startColumnIndex': fc-1,
+    #     'endColumnIndex': data_width,
+    # }
     info_range = {
         'sheetId': dyn_sheet_id,
         'startRowIndex': 0,
@@ -253,12 +253,12 @@ def main():
         "color": {},
     }
 
-    # clear_format = {'requests': [{"deleteConditionalFormatRule": {"sheetId": dyn_sheet_id}}]}
-    # for i in range(5):
-    #     response = service.spreadsheets() \
-    #         .batchUpdate(spreadsheetId=SPREADSHEET_ID, body=clear_format).execute()
-    #     print('{0} cells updated.'.format(len(response.get('replies'))))
-    #     print(response)
+    clear_format = {'requests': [{"deleteConditionalFormatRule": {"sheetId": dyn_sheet_id}}]}
+    for i in range(4):
+        response = service.spreadsheets() \
+            .batchUpdate(spreadsheetId=SPREADSHEET_ID, body=clear_format).execute()
+        print('{0} cells updated.'.format(len(response.get('replies'))))
+        print(response)
 
     requests = [
         {"updateCells": {
@@ -266,53 +266,6 @@ def main():
             "range": data_range,
             "fields": 'userEnteredFormat'
         }},
-        # {
-        #     "updateCells": {
-        #         "rows": [
-        #             {  # object(GridData)
-        #                 "values": [
-        #                     {
-        #                         "userEnteredValue": {  # object(ExtendedValue)
-        #                             # "numberValue": 11,
-        #                             "stringValue": 'string',
-        #                             # "boolValue": boolean,
-        #                             # "formulaValue": string,
-        #                             # "errorValue": {
-        #                             #   "type": enum(ErrorType),
-        #                             #   "message": string
-        #                             # }
-        #                         },
-        #                         "userEnteredFormat": {
-        #                             "backgroundColor": {"red": 0.5},
-        #                             # "numberFormat": {
-        #                             #   object(NumberFormat)
-        #                             # },
-        #                             # "borders": {
-        #                             #   object(Borders)
-        #                             # },
-        #                             # "padding": {
-        #                             #   object(Padding)
-        #                             # },
-        #                             # "horizontalAlignment": enum(HorizontalAlign),
-        #                             # "verticalAlignment": enum(VerticalAlign),
-        #                             # "wrapStrategy": enum(WrapStrategy),
-        #                             # "textDirection": enum(TextDirection),
-        #                             # "textFormat": {
-        #                             #   object(TextFormat)
-        #                             # },
-        #                         },
-        #                         # "pivotTable": {
-        #                         #     object(PivotTable)
-        #                         # }
-        #                     }
-        #                 ]
-        #             }
-        #         ],
-        #         "fields": '*',
-        #         "range": my_range
-        #     },
-        # },
-
         # drawing borders
         {
             "updateBorders": {
@@ -450,40 +403,40 @@ def main():
             }
         },
         # coloring gradient
-        {
-            "addConditionalFormatRule": {
-                "rule": {
-                    "ranges": [grad_range],
-                    "gradientRule": {
-                        "maxpoint": {
-                            "color": {
-                                "red": 1,
-                                "green": 0.3,
-                                "blue": 0.2
-                            },
-                            "type": "MAX"
-                        },
-                        "midpoint": {
-                            "color": {
-                                "red": 1,
-                                "green": 1,
-                                "blue": 0.2
-                            },
-                            "type": "PERCENT",
-                            "value": '7'
-                        },
-                        "minpoint": {
-                            "color": {
-                                "red": 0.15,
-                                "green": 0.9,
-                                "blue": 1
-                            },
-                            "type": "MIN"
-                        }
-                    }
-                }
-            }
-        },
+        # {
+        #     "addConditionalFormatRule": {
+        #         "rule": {
+        #             "ranges": [grad_range],
+        #             "gradientRule": {
+        #                 "maxpoint": {
+        #                     "color": {
+        #                         "red": 1,
+        #                         "green": 0.3,
+        #                         "blue": 0.2
+        #                     },
+        #                     "type": "MAX"
+        #                 },
+        #                 "midpoint": {
+        #                     "color": {
+        #                         "red": 1,
+        #                         "green": 1,
+        #                         "blue": 0.2
+        #                     },
+        #                     "type": "PERCENT",
+        #                     "value": '7'
+        #                 },
+        #                 "minpoint": {
+        #                     "color": {
+        #                         "red": 0.15,
+        #                         "green": 0.9,
+        #                         "blue": 1
+        #                     },
+        #                     "type": "MIN"
+        #                 }
+        #             }
+        #         }
+        #     }
+        # },
     ]
     response = service.spreadsheets() \
         .batchUpdate(spreadsheetId=SPREADSHEET_ID, body={'requests': requests}).execute()

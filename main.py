@@ -1,10 +1,8 @@
 import argparse
+import requests
 import time
 from datetime import date
 from random import randint
-
-import requests
-
 from models.statsDaily import StatsDaily
 from models.historyPrice import HistoryPrice
 from models.historyPromo import HistoryPromo
