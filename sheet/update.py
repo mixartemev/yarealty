@@ -64,6 +64,7 @@ def to_mc_sheet(offers: List[McityOffer]):
         of_type = 'flat' if o.category == 'flat' else 'commercial'
         stats: StatsDaily = session.query(StatsDaily).order_by(StatsDaily.date.desc()).filter_by(id=o.id).first()
         price: HistoryPrice = session.query(HistoryPrice).order_by(HistoryPrice.time.desc()).filter_by(id=o.id).first()
+        promo = session.query(HistoryPromo).order_by(HistoryPromo.date.desc()).filter_by(id=o.id).first()
         body['values'].append([
             '=HYPERLINK("https://www.cian.ru/{}/{}/{}";"{}")'.format(o.dealType, of_type, o.id, o.id),
             '=HYPERLINK("https://www.mcity.ru/{}";"{}")'.format(o.idd, o.idd) if o.idd else None,
@@ -85,7 +86,7 @@ def to_mc_sheet(offers: List[McityOffer]):
             o.isPro,
             o.publishTerms_autoprolong,
             price.price if price else None,
-            session.query(HistoryPromo).order_by(HistoryPromo.date.desc()).filter_by(id=o.id).first().services,
+            promo.services if promo else None,
             stats.stats_total if stats else None,
             stats.stats_daily if stats else None
         ])
