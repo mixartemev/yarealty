@@ -145,7 +145,7 @@ def main():
 
 def push(ok=True):
     url = 'https://fcm.googleapis.com/fcm/send'
-    title = 'Мегапарсёр отработал'
+    title = 'Парсер отработал'
     mess = 'Данные успешно спизджены полностью' if ok else 'Пизда рулю. Все сломалось'
     act = 'https://docs.google.com/spreadsheets/d/1lPFc1p_5TNSxYOtJ4hSqcSMAiUig4slRQTdMmgJroic/edit#gid=656058326'
     tok = 'cDBL0-jYBWQ:APA91bG294ZcB0TkztsUkt-hBayeC6kPnYBzY6swFSEgNtJGdB5ht1xm-Kq_7VokWMLH35ecV9SbR0PMm7qrxmXtTO8tPkNUJ09F1j2m0B923BYrh8mOzQGubb3xdNHR249mvwrWM-fb'
