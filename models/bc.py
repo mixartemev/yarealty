@@ -12,7 +12,7 @@ class Bc(Base):
     address = Column(String)
     editDate = Column(Date)
     offers = relationship("Offer", back_populates="bc")
-    # mcityOffers = relationship("McityOffer", back_populates="bc")
+    mcityOffers = relationship("McityOffer", back_populates="bc")
     # children = relationship("Bc", back_populates="parent")
     # parent = relationship("Bc", remote_side=[id],  back_populates="children")
     children = relationship("Bc", backref=backref('parent', remote_side=[id]))

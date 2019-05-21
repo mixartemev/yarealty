@@ -174,7 +174,12 @@ def main():
 
     mcityOffers = session.query(McityOffer).all()
     # todo from stats
-    offers = session.query(Offer).all()  # .offset(500).limit(100)
+    flatSale = session.query(Offer).filter_by(category='flat', dealType='sale').all()  # .offset(500).limit(100)
+    flatRent = session.query(Offer).filter_by(category='flat', dealType='rent').all()
+    officeRent = session.query(Offer).filter_by(category='flat', dealType='rent').all()
+    officeSale = session.query(Offer).filter_by(category='flat', dealType='rent').all()
+    shopRent = session.query(Offer).filter_by(category='flat', dealType='rent').all()
+    shopSale = session.query(Offer).filter_by(category='flat', dealType='rent').all()
 
     service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
     service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
