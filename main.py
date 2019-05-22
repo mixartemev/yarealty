@@ -3,12 +3,15 @@ import requests
 import time
 from datetime import date
 from random import randint
+
 from models.statsDaily import StatsDaily
 from models.historyPrice import HistoryPrice
 from models.historyPromo import HistoryPromo
 from models.mcityOffer import McityOffer
 from models.Offer import Offer
+from models.phone import Phone
 from models.user import User
+from userConverter import userConvert
 from db import session
 from req import make as make_request
 from converter import convert
@@ -45,7 +48,6 @@ from converter import convert
 #         params = tuple(row)
 #         session.merge(Bc(*params))
 # session.commit()
-from userConverter import userConvert
 
 
 def upd_stats():
@@ -86,8 +88,8 @@ def main():
 
                     for e in userConvert(data['all_agents']):
                         session.merge(User(*e))
-
-                    session.commit()
+                        for phone in e[-1]:
+                            session.merge(Phone(e[0], phone))
 
                     mc_count = 0
                     ok = True

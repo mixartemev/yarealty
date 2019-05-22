@@ -1,11 +1,10 @@
 from models import *
-from models.phone import Phone
 
 
 class User(Base):
     __tablename__ = 'users'
     acc_map = [
-        "?"
+        "?",
         "realtor",
         "agency",
         "uk",
@@ -22,6 +21,8 @@ class User(Base):
     phones = relationship("Phone", back_populates="user")
 
     def __init__(self, id, name, creation_date, is_profi, is_private_broker, is_moderation_passed, status, account_type, phones):
+        if account_type > 4:
+            print(name)
         self.id = id
         self.name = name
         self.creation_date = creation_date
@@ -29,5 +30,5 @@ class User(Base):
         self.is_private_broker = is_private_broker
         self.is_moderation_passed = is_moderation_passed
         self.status = status
-        self.account_type = account_type
-        self.phones = phones
+        self.account_type = self.acc_map[account_type]
+        # self.phones = phones

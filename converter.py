@@ -10,7 +10,6 @@ def convert(raw_data: list):
             "statsDaily": _statsDaily(e),
             "historyPrice": _historyPrice(e),
             "historyPromo": _historyPromo(e),
-            "user": _user(e),
         }
 
 
@@ -86,17 +85,3 @@ def _historyPrice(o: dict) -> List[Tuple[int, float, int]] or None:
     for ph in o['historyPriceChanges']:
         prices.append((o['id'], ph["changeTime"], ph["priceData"]["price"]))
     return prices
-
-
-def _user(u: dict) -> tuple:
-    return (
-        u['id'],
-        u['name'],
-        u['creation_date'],
-        u['is_profi'],
-        u['is_private_broker'],
-        u['is_moderation_passed'],
-        u['status'],
-        u['account_type'],
-        u['phones']
-    )
