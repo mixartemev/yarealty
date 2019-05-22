@@ -7,6 +7,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 # If modifying these scopes, delete the file token.pickle.
+from idna import unichr
 from sqlalchemy import or_
 
 from db import session
@@ -26,6 +27,30 @@ PROMO_COLORS = {
     "premium": {"green": 0.5},
     "paid": {"blue": 0.9}
 }
+
+"""Shows basic usage of the Sheets API.
+Prints values from a sample spreadsheet.
+"""
+creds = None
+# The file token.pickle stores the user's access and refresh tokens, and is
+# created automatically when the authorization flow completes for the first
+# time.
+if os.path.exists('sheet/token.pickle'):
+    with open('sheet/token.pickle', 'rb') as token:
+        creds = pickle.load(token)
+# If there are no (valid) credentials available, let the user log in.
+if not creds or not creds.valid:
+    if creds and creds.expired and creds.refresh_token:
+        creds.refresh(Request())
+    else:
+        flow = InstalledAppFlow.from_client_secrets_file('sheet/credentials.json', SCOPES)
+        creds = flow.run_local_server()
+    # Save the credentials for the next run
+    with open('sheet/token.pickle', 'wb') as token:
+        pickle.dump(creds, token)
+
+service = build('sheets', 'v4', credentials=creds)
+sheets = service.spreadsheets().get(spreadsheetId=SPREADSHEET_ID, fields='sheets.properties').execute()['sheets']
 
 
 def to_sheet(offers: List[Offer]):
@@ -145,39 +170,39 @@ def history(offers: List[Offer]):
     return [values, promo_data]
 
 
+def columnToLetter(column):
+    letter = ''
+    while column > 0:
+        temp = int((column - 1) % 26)
+        letter = unichr(temp + 65) + letter
+        column = (column - temp - 1) / 26
+    return letter
+
+
 def main():
-    """Shows basic usage of the Sheets API.
-    Prints values from a sample spreadsheet.
-    """
-    creds = None
-    # The file token.pickle stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists('sheet/token.pickle'):
-        with open('sheet/token.pickle', 'rb') as token:
-            creds = pickle.load(token)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file('sheet/credentials.json', SCOPES)
-            creds = flow.run_local_server()
-        # Save the credentials for the next run
-        with open('sheet/token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
-
-    service = build('sheets', 'v4', credentials=creds)
-
     # # Create spreadsheet
     # spreadsheet = {'properties': {'title': 'MCity Cian Offers'}}
     # spreadsheet = service.spreadsheets().create(body=spreadsheet, fields='spreadsheetId').execute()
     # print('Spreadsheet ID: {0}'.format(spreadsheet.get('spreadsheetId')))
     service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
     service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
-    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='dynamic!A1:W5000').execute()
+
     mcityOffers = session.query(McityOffer).all()
     offers = session.query(Offer)
+
+    flatRent = offers.filter(or_(Offer.category == 'flat', Offer.category == 'newBuildingFlat'), Offer.dealType == 'rent').all()
+    flatSale = offers.filter(or_(Offer.category == 'flat', Offer.category == 'newBuildingFlat'), Offer.dealType == 'sale').all()
+    officeRent = offers.filter(or_(Offer.category == 'office', Offer.category == 'freeAppointmentObject'), Offer.dealType == 'rent').all()
+    officeSale = offers.filter(or_(Offer.category == 'office', Offer.category == 'freeAppointmentObject'), Offer.dealType == 'sale').all()
+    shopRent = offers.filter_by(category='shoppingArea', dealType='rent').all()
+    shopSale = offers.filter_by(category='shoppingArea', dealType='sale').all()
+    for sheet in sheets:
+        sps = sheet['properties']
+        if sps['title'].endswith('_stat'):
+            rng = sps['title']+'!A1:'+columnToLetter(sps['gridProperties']['columnCount'])+str(sps['gridProperties']['rowCount'])
+            service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range=rng).execute()
+            dyn(sps['sheetId'], sps['title'], locals()[sps['title'].replace('_stat', '')])
+
     result = service.spreadsheets().values().update(
         spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
     ).execute()
@@ -187,21 +212,8 @@ def main():
     ).execute()
     pprint(result)
 
-    flatRent = offers.filter(or_(Offer.category == 'flat', Offer.category == 'newBuildingFlat'), Offer.dealType == 'rent').all()
-    flatSale = offers.filter(or_(Offer.category == 'flat', Offer.category == 'newBuildingFlat'), Offer.dealType == 'sale').all()
-    officeRent = offers.filter(or_(Offer.category == 'office', Offer.category == 'freeAppointmentObject'), Offer.dealType == 'rent').all()
-    officeSale = offers.filter(or_(Offer.category == 'office', Offer.category == 'freeAppointmentObject'), Offer.dealType == 'sale').all()
-    shopRent = offers.filter_by(category='shoppingArea', dealType='rent').all()
-    shopSale = offers.filter_by(category='shoppingArea', dealType='sale').all()
-    dyn(service, 656058326, flatRent)
-    dyn(service, flatSale)
-    dyn(service, officeRent)
-    dyn(service, officeSale)
-    dyn(service, shopRent)
-    dyn(service, shopSale)
 
-
-def dyn(service, dyn_sheet_id, offs: [Offer]):
+def dyn(dyn_sheet_id, dyn_sheet_title, offs: [Offer]):
     history_offers = history(offs)
     vals = history_offers[0]
     batch = 0
@@ -209,7 +221,7 @@ def dyn(service, dyn_sheet_id, offs: [Offer]):
         new_batch = batch+1000
         result = service.spreadsheets().values().update(
             spreadsheetId=SPREADSHEET_ID,
-            range='dynamic!A'+str(batch+1),
+            range=dyn_sheet_title+'!A'+str(batch+1),
             valueInputOption='USER_ENTERED',
             body={'values': vals[batch:new_batch]}
         ).execute()
@@ -242,13 +254,13 @@ def dyn(service, dyn_sheet_id, offs: [Offer]):
         'startColumnIndex': fc,
         'endColumnIndex': data_width,
     }
-    # grad_range = {
-    #     'sheetId': dyn_sheet_id,
-    #     'startRowIndex': 1,
-    #     'endRowIndex': vals.__len__(),
-    #     'startColumnIndex': fc-1,
-    #     'endColumnIndex': data_width,
-    # }
+    grad_range = {
+        'sheetId': dyn_sheet_id,
+        'startRowIndex': 1,
+        'endRowIndex': vals.__len__(),
+        'startColumnIndex': fc-1,
+        'endColumnIndex': data_width,
+    }
     info_range = {
         'sheetId': dyn_sheet_id,
         'startRowIndex': 0,
@@ -268,7 +280,7 @@ def dyn(service, dyn_sheet_id, offs: [Offer]):
     }
 
     clear_format = {'requests': [{"deleteConditionalFormatRule": {"sheetId": dyn_sheet_id}}]}
-    for i in range(4):
+    for i in range(5):
         response = service.spreadsheets() \
             .batchUpdate(spreadsheetId=SPREADSHEET_ID, body=clear_format).execute()
         print('{0} cells updated.'.format(len(response.get('replies'))))
@@ -417,40 +429,40 @@ def dyn(service, dyn_sheet_id, offs: [Offer]):
             }
         },
         # coloring gradient
-        # {
-        #     "addConditionalFormatRule": {
-        #         "rule": {
-        #             "ranges": [grad_range],
-        #             "gradientRule": {
-        #                 "maxpoint": {
-        #                     "color": {
-        #                         "red": 1,
-        #                         "green": 0.3,
-        #                         "blue": 0.2
-        #                     },
-        #                     "type": "MAX"
-        #                 },
-        #                 "midpoint": {
-        #                     "color": {
-        #                         "red": 1,
-        #                         "green": 1,
-        #                         "blue": 0.2
-        #                     },
-        #                     "type": "PERCENT",
-        #                     "value": '7'
-        #                 },
-        #                 "minpoint": {
-        #                     "color": {
-        #                         "red": 0.15,
-        #                         "green": 0.9,
-        #                         "blue": 1
-        #                     },
-        #                     "type": "MIN"
-        #                 }
-        #             }
-        #         }
-        #     }
-        # },
+        {
+            "addConditionalFormatRule": {
+                "rule": {
+                    "ranges": [grad_range],
+                    "gradientRule": {
+                        "maxpoint": {
+                            "color": {
+                                "red": 1,
+                                "green": 0.3,
+                                "blue": 0.2
+                            },
+                            "type": "MAX"
+                        },
+                        "midpoint": {
+                            "color": {
+                                "red": 1,
+                                "green": 1,
+                                "blue": 0.2
+                            },
+                            "type": "PERCENT",
+                            "value": '7'
+                        },
+                        "minpoint": {
+                            "color": {
+                                "red": 0.15,
+                                "green": 0.9,
+                                "blue": 1
+                            },
+                            "type": "MIN"
+                        }
+                    }
+                }
+            }
+        },
     ]
     response = service.spreadsheets() \
         .batchUpdate(spreadsheetId=SPREADSHEET_ID, body={'requests': requests}).execute()
