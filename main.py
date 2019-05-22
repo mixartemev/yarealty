@@ -8,6 +8,7 @@ from models.historyPrice import HistoryPrice
 from models.historyPromo import HistoryPromo
 from models.mcityOffer import McityOffer
 from models.Offer import Offer
+from models.user import User
 from db import session
 from req import make as make_request
 from converter import convert
@@ -44,6 +45,7 @@ from converter import convert
 #         params = tuple(row)
 #         session.merge(Bc(*params))
 # session.commit()
+from userConverter import userConvert
 
 
 def upd_stats():
@@ -79,7 +81,14 @@ def main():
                     if 'error' in result:
                         exit()
 
-                    res: list = result['data']['offers']
+                    data: dict = result['data']
+                    res: list = data['offers']
+
+                    for e in userConvert(data['all_agents']):
+                        session.merge(User(*e))
+
+                    session.commit()
+
                     mc_count = 0
                     ok = True
 

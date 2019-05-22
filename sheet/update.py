@@ -121,7 +121,7 @@ def to_mc_sheet(offers: List[McityOffer]):
 
 
 def history(offers: List[Offer]):
-    values = [['offer id', 'user', 'type', 'deal', 'average']]
+    values = [['offer id', 'user', 'last price', 'area', 'average']]
     start_date = date(2019, 4, 25)
     dates = []
     promo_data = []
@@ -137,8 +137,8 @@ def history(offers: List[Offer]):
         row = [
             '=HYPERLINK("https://www.cian.ru/{}/{}/{}";"{}")'.format(o.dealType, of_type, o.id, o.id),
             '=HYPERLINK("https://www.cian.ru/company/{}";"{}")'.format(o.cianUserId, o.cianUserId),
-            o.category,
-            o.dealType,
+            o.prices[-1].price if o.prices else None,
+            int(o.totalArea),
             '=AVERAGE(F{}:{})'.format(row_num, row_num)
         ]
         promo_row_values = []
