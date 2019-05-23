@@ -1,3 +1,5 @@
+from datetime import date
+
 from models import *
 
 
@@ -25,7 +27,7 @@ class User(Base):
             print(name)
         self.id = id
         self.name = name
-        self.creation_date = creation_date
+        self.creation_date: date = creation_date
         self.is_profi = is_profi
         self.is_private_broker = is_private_broker
         self.is_moderation_passed = is_moderation_passed

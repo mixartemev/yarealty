@@ -192,12 +192,13 @@ def main():
         ['id', 'name', 'creation date', 'is profi', 'is private broker', 'is moderated', 'status', 'account_type', 'phones']
     ]
     users = session.query(User).all()
+    user: User
     for user in users:
-        phones = list(user.phones)
-        users.append([
+        phones = list(map(lambda p: p.phone, user.phones))
+        rows.append([
             user.id,
             user.name,
-            user.creation_date,
+            user.creation_date.isoformat(),
             user.is_profi,
             user.is_private_broker,
             user.is_moderation_passed,
@@ -208,7 +209,7 @@ def main():
     result = service.spreadsheets().values().update(
             spreadsheetId=SPREADSHEET_ID,
             range='users!A1',
-            valueInputOption='USER_ENTERED',
+            valueInputOption='RAW',
             body={'values': rows}
         ).execute()
     print(result)
