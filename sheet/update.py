@@ -9,6 +9,7 @@ from google.auth.transport.requests import Request
 # If modifying these scopes, delete the file token.pickle.
 from idna import unichr
 from sqlalchemy import or_
+from sqlalchemy.orm.collections import InstrumentedList
 
 from db import session
 from models.historyPrice import HistoryPrice
@@ -16,6 +17,8 @@ from models.historyPromo import HistoryPromo
 from models.mcityOffer import McityOffer
 from models.Offer import Offer
 from models.statsDaily import StatsDaily
+from models.phone import Phone
+from models.user import User
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
@@ -184,6 +187,32 @@ def main():
     # spreadsheet = {'properties': {'title': 'MCity Cian Offers'}}
     # spreadsheet = service.spreadsheets().create(body=spreadsheet, fields='spreadsheetId').execute()
     # print('Spreadsheet ID: {0}'.format(spreadsheet.get('spreadsheetId')))
+
+    rows = [
+        ['id', 'name', 'creation date', 'is profi', 'is private broker', 'is moderated', 'status', 'account_type', 'phones']
+    ]
+    users = session.query(User).all()
+    for user in users:
+        phones = list(user.phones)
+        users.append([
+            user.id,
+            user.name,
+            user.creation_date,
+            user.is_profi,
+            user.is_private_broker,
+            user.is_moderation_passed,
+            user.status,
+            user.account_type,
+            ', '.join(phones)
+        ])
+    result = service.spreadsheets().values().update(
+            spreadsheetId=SPREADSHEET_ID,
+            range='users!A1',
+            valueInputOption='USER_ENTERED',
+            body={'values': rows}
+        ).execute()
+    print(result)
+
     service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
     service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
 
