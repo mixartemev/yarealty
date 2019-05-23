@@ -59,6 +59,8 @@ def _offer(o: dict) -> tuple:
         o['userTrust'],
         o.get('isPro'),
         o['publishTerms'].get('autoprolong'),
+        o['bargainTerms'].get('priceType'),
+        o.get('minArea'),
     )
 
 

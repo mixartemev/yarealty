@@ -46,6 +46,8 @@ class Offer(Base):
     promos: List[HistoryPromo] = relationship("HistoryPromo", order_by=HistoryPromo.date, back_populates="offer")
     created_at = Column('created_at', DateTime, default=func.now())
     updated_at = Column('updated_at', DateTime, default=func.now(), onupdate=func.now())
+    priceType = Column(Enum('squareMeter', 'all', name='priceType', schema='cian'))
+    minArea = Column(DECIMAL(7, 2))
 
     def __init__(self,
                  id,
@@ -66,7 +68,9 @@ class Offer(Base):
                  totalArea,
                  userTrust,
                  isPro,
-                 publishTerms_autoprolong
+                 publishTerms_autoprolong,
+                 priceType,
+                 minArea
                  ):
         self.id = id
         self.cianUserId = cianUserId
@@ -87,3 +91,5 @@ class Offer(Base):
         self.userTrust = userTrust
         self.isPro = isPro
         self.publishTerms_autoprolong = publishTerms_autoprolong
+        self.priceType = priceType
+        self.minArea = minArea
