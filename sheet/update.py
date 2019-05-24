@@ -139,7 +139,7 @@ def history(offers: List[Offer]):
         row_num = values.__len__()+1
         row = [
             '=HYPERLINK("https://www.cian.ru/{}/{}/{}";"{}")'.format(o.dealType, of_type, o.id, o.id),
-            '=HYPERLINK("https://www.cian.ru/company/{}";"{}")'.format(o.cianUserId, o.cianUserId),
+            '=HYPERLINK("https://www.cian.ru/company/{}";"{}")'.format(o.cianUserId, o.user.name if o.user else o.cianUserId),
             o.prices[-1].price if o.prices else None,
             int(o.totalArea),
             '=AVERAGE(F{}:{})'.format(row_num, row_num)

@@ -1,5 +1,4 @@
 from datetime import date
-
 from models import *
 
 
@@ -21,6 +20,7 @@ class User(Base):
     status = Column(Enum("published", "hidden", name='userStatus', schema='cian'))
     account_type = Column(Enum("realtor", "agency", "uk", "owner", name='accType', schema='cian'))
     phones = relationship("Phone", back_populates="user")
+    offers = relationship("Offer", back_populates="user")
 
     def __init__(self, id, name, creation_date, is_profi, is_private_broker, is_moderation_passed, status, account_type, phones):
         if account_type > 4:

@@ -10,12 +10,13 @@ from models.house import House
 from models.location import Location
 from models.newbuilding import Newbuilding
 from models.statsDaily import StatsDaily
+from models.user import User
 
 
 class Offer(Base):
     __tablename__ = 'offers'
     id = Column(BigInteger, primary_key=True)
-    cianUserId = Column(Integer)
+    cianUserId = Column(Integer, ForeignKey('users.id'))
     bc_id = Column(Integer, ForeignKey('bcs.id'))
     house_id = Column(Integer, ForeignKey('houses.id'))
     newbuilding_id = Column(Integer, ForeignKey('newbuildings.id'))
@@ -44,6 +45,7 @@ class Offer(Base):
     prices: List[HistoryPrice] = relationship("HistoryPrice", order_by=HistoryPrice.time, back_populates="offer")
     stats: List[StatsDaily] = relationship("StatsDaily", order_by=StatsDaily.date, back_populates="offer")
     promos: List[HistoryPromo] = relationship("HistoryPromo", order_by=HistoryPromo.date, back_populates="offer")
+    user: User = relationship("User", back_populates="offers")
     created_at = Column('created_at', DateTime, default=func.now())
     updated_at = Column('updated_at', DateTime, default=func.now(), onupdate=func.now())
     priceType = Column(Enum('squareMeter', 'all', name='priceType', schema='cian'))
