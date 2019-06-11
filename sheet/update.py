@@ -125,7 +125,7 @@ def to_mc_sheet(offers: List[McityOffer]):
 
 def history(offers: List[Offer]):
     values = [['offer id', 'user', 'last price', 'area', 'average']]
-    start_date = date(2019, 5, 20)
+    start_date = date(2019, 5, 21)
     dates = []
     promo_data = []
     for n in range((date.today() - start_date).days):
@@ -167,7 +167,7 @@ def history(offers: List[Offer]):
                 row.append(None)
                 promo_row_values.append({})
 
-        if si:
+        if si:  # if row not empty
             values.append(row)
             promo_data.append({"values": promo_row_values})
 
@@ -219,7 +219,7 @@ def main():
     service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
 
     mcityOffers = session.query(McityOffer).all()
-    offers = session.query(Offer)
+    offers = session.query(Offer)  # todo make entire monolit grouped sql query, escape from cycles
 
     result = service.spreadsheets().values().update(
         spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
@@ -233,7 +233,6 @@ def main():
     flatRent = offers.filter(
         or_(Offer.category == 'flat', Offer.category == 'newBuildingFlat'),
         Offer.dealType == 'rent'
-
     ).all()
     flatSale = offers.filter(or_(Offer.category == 'flat', Offer.category == 'newBuildingFlat'), Offer.dealType == 'sale').all()
     officeRent = offers.filter(or_(Offer.category == 'office', Offer.category == 'freeAppointmentObject'), Offer.dealType == 'rent').all()
