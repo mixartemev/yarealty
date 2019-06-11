@@ -8,7 +8,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 # If modifying these scopes, delete the file token.pickle.
 from idna import unichr
-from sqlalchemy import or_, func
+from sqlalchemy import or_
 from sqlalchemy.orm.collections import InstrumentedList
 
 from db import session
@@ -54,8 +54,6 @@ if not creds or not creds.valid:
 
 service = build('sheets', 'v4', credentials=creds)
 sheets = service.spreadsheets().get(spreadsheetId=SPREADSHEET_ID, fields='sheets.properties').execute()['sheets']
-
-start_date = date(2019, 5, 20)
 
 
 def to_sheet(offers: List[Offer]):
@@ -127,6 +125,7 @@ def to_mc_sheet(offers: List[McityOffer]):
 
 def history(offers: List[Offer]):
     values = [['offer id', 'user', 'last price', 'area', 'average']]
+    start_date = date(2019, 5, 20)
     dates = []
     promo_data = []
     for n in range((date.today() - start_date).days):
@@ -168,8 +167,9 @@ def history(offers: List[Offer]):
                 row.append(None)
                 promo_row_values.append({})
 
-        values.append(row)
-        promo_data.append({"values": promo_row_values})
+        if si:
+            values.append(row)
+            promo_data.append({"values": promo_row_values})
 
     return [values, promo_data]
 
@@ -215,29 +215,25 @@ def main():
         ).execute()
     print(result)
 
-    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
-    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
+    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
+    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
 
-    # mcityOffers = session.query(McityOffer).all()
-    offers = session.query(Offer)  # .limit(500)
+    mcityOffers = session.query(McityOffer).all()
+    offers = session.query(Offer)
 
-    # result = service.spreadsheets().values().update(
-    #     spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
-    # ).execute()
-    # pprint(result)
-    # result = service.spreadsheets().values().update(
-    #     spreadsheetId=SPREADSHEET_ID, range='all!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers.all())
-    # ).execute()
-    # pprint(result)
-
-    offers = offers.join(Offer.stats)\
-        .group_by(Offer.id)\
-        .having(func.max(StatsDaily.date) >= start_date)\
-        # .limit(100)
+    result = service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
+    ).execute()
+    pprint(result)
+    result = service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID, range='all!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers.all())
+    ).execute()
+    pprint(result)
 
     flatRent = offers.filter(
         or_(Offer.category == 'flat', Offer.category == 'newBuildingFlat'),
         Offer.dealType == 'rent'
+
     ).all()
     flatSale = offers.filter(or_(Offer.category == 'flat', Offer.category == 'newBuildingFlat'), Offer.dealType == 'sale').all()
     officeRent = offers.filter(or_(Offer.category == 'office', Offer.category == 'freeAppointmentObject'), Offer.dealType == 'rent').all()
@@ -318,12 +314,12 @@ def dyn(dyn_sheet_id, dyn_sheet_title, offs: [Offer]):
         "color": {},
     }
 
-    clear_format = {'requests': [{"deleteConditionalFormatRule": {"sheetId": dyn_sheet_id}}]}
-    for i in range(5):
-        response = service.spreadsheets() \
-            .batchUpdate(spreadsheetId=SPREADSHEET_ID, body=clear_format).execute()
-        print('{0} cells updated.'.format(len(response.get('replies'))))
-        print(response)
+    # clear_format = {'requests': [{"deleteConditionalFormatRule": {"sheetId": dyn_sheet_id}}]}
+    # for i in range(5):
+    #     response = service.spreadsheets() \
+    #         .batchUpdate(spreadsheetId=SPREADSHEET_ID, body=clear_format).execute()
+    #     print('{0} cells updated.'.format(len(response.get('replies'))))
+    #     print(response)
 
     requests = [
         {
