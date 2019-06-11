@@ -215,25 +215,25 @@ def main():
         ).execute()
     print(result)
 
-    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
-    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
+    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
+    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
 
-    mcityOffers = session.query(McityOffer).all()
+    # mcityOffers = session.query(McityOffer).all()
     offers = session.query(Offer)  # .limit(500)
 
-    result = service.spreadsheets().values().update(
-        spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
-    ).execute()
-    pprint(result)
-    result = service.spreadsheets().values().update(
-        spreadsheetId=SPREADSHEET_ID, range='all!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers.all())
-    ).execute()
-    pprint(result)
+    # result = service.spreadsheets().values().update(
+    #     spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
+    # ).execute()
+    # pprint(result)
+    # result = service.spreadsheets().values().update(
+    #     spreadsheetId=SPREADSHEET_ID, range='all!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers.all())
+    # ).execute()
+    # pprint(result)
 
-    offers.join(Offer.stats)\
+    offers = offers.join(Offer.stats)\
         .group_by(Offer.id)\
-        .having(func.max(StatsDaily.date >= start_date))\
-        # .limit(500)
+        .having(func.max(StatsDaily.date) >= start_date)\
+        # .limit(100)
 
     flatRent = offers.filter(
         or_(Offer.category == 'flat', Offer.category == 'newBuildingFlat'),
