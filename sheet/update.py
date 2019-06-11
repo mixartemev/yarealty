@@ -125,7 +125,7 @@ def to_mc_sheet(offers: List[McityOffer]):
 
 def history(offers: List[Offer]):
     values = [['offer id', 'user', 'last price', 'area', 'average']]
-    start_date = date(2019, 4, 25)
+    start_date = date(2019, 5, 20)
     dates = []
     promo_data = []
     for n in range((date.today() - start_date).days):
@@ -317,6 +317,11 @@ def dyn(dyn_sheet_id, dyn_sheet_title, offs: [Offer]):
         print(response)
 
     requests = [
+        {
+            "clearBasicFilter": {
+                "sheetId": dyn_sheet_id
+            }
+        },
         {"updateCells": {
             "rows": history_offers[1],
             "range": data_range,
