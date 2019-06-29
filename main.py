@@ -1,4 +1,3 @@
-import argparse
 import requests
 import time
 from datetime import date
@@ -51,7 +50,7 @@ from converter import convert
 
 
 def upd_stats():
-    o: Offer
+    # o: Offer
     for o in session.query(Offer).all():
         for i, s in enumerate(o.stats):
             if s.stats_daily is None:
@@ -62,87 +61,88 @@ def upd_stats():
                 session.commit()
 
 
+def process(offer_type, bc_id):  # todo refactor: bc_id needs only for offices
+    for deal_type in ['rent', 'sale']:
+        print(offer_type, deal_type)
+        current_page = 1
+        while True:
+            print("Processing page {}...".format(current_page))
+
+            result = make_request(bc_id, offer_type, deal_type, current_page)
+
+            if 'error' in result:
+                exit()
+
+            data: dict = result['data']
+            res: list = data['offers']
+
+            for e in userConvert(data['all_agents']):
+                session.merge(User(*e))
+                for phone in e[-1]:
+                    session.merge(Phone(e[0], phone))
+
+            mc_count = 0
+            ok = True
+
+            for e in convert(res):
+                if e['offer'][9] != 'dailyFlat':
+                    offer: Offer = session.query(Offer).get(e['offer'][0])
+                    session.merge(Offer(*e['offer']))
+
+                    stats_exists = offer and offer.stats and offer.stats[-1].date == date.today()
+                    if e['statsDaily'][1] is None or e['statsDaily'][1] is None:
+                        print(offer_type, deal_type, current_page, 'Stats None')
+                        ok = False
+                        time.sleep(3)
+                        break
+                    if not stats_exists:
+                        session.merge(StatsDaily(*e['statsDaily']))
+                    elif stats_exists and (offer.stats[-1].stats_daily is None or offer.stats[-1].stats_daily <
+                                           e['statsDaily'][2]):  # and e['statsDaily'][2] is not None
+                        session.query(StatsDaily) \
+                            .filter_by(id=e['statsDaily'][0], date=date.today()) \
+                            .update({"stats_total": e['statsDaily'][1], "stats_daily": e['statsDaily'][2]})
+
+                    if e['offer'][1] == 9383110:
+                        mc_count += 1
+                        session.merge(McityOffer(*e['mcityOffer']))
+
+                    hp = e['historyPromo']
+                    if offer and not offer.promos:
+                        print("Obj {} hasn't prices?".format(offer.id))
+                    if not (offer and offer.promos and offer.promos[-1].services == hp[1]):
+                        session.add(HistoryPromo(*hp))
+
+                    if e['historyPrice'] is None:
+                        print(offer_type, deal_type, current_page, 'Price None')
+                        continue
+                    for p in e['historyPrice']:
+                        h = HistoryPrice(*p)
+                        c = session.query(HistoryPrice).filter_by(id=h.id, time=h.time).count()
+                        if not c:
+                            session.merge(h)
+
+            if ok:
+                session.commit()
+                current_page += 1
+                delay = randint(3, 10)
+                length = res.__len__()
+                print("{0} {1} {2} (inc {3} mcity) received.\nWaiting {4} seconds..".format(
+                    length, deal_type, offer_type, mc_count, delay
+                ))
+                time.sleep(delay)
+                if length < 50:
+                    break  # Объявлений больше нет -> съёбки
+
+
 def main():
     # upd_stats()
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--user_id', type=int, default=None, help='user id')
-    parser.add_argument('--bs_center_id', type=int, default=8366, help='bs_center id')
-    parser.add_argument('--start_page', type=int, default=1, help='page number to start')
-    args = parser.parse_args()
-
     try:
         for offer_type in ['office', 'flat']:
-            for deal_type in ['rent', 'sale']:
-                print(offer_type, deal_type)
-                current_page = 1
-                while True:
-                    print("Processing page {}...".format(current_page))
-
-                    result = make_request(args, offer_type, deal_type, current_page)
-
-                    if 'error' in result:
-                        exit()
-
-                    data: dict = result['data']
-                    res: list = data['offers']
-
-                    for e in userConvert(data['all_agents']):
-                        session.merge(User(*e))
-                        for phone in e[-1]:
-                            session.merge(Phone(e[0], phone))
-
-                    mc_count = 0
-                    ok = True
-
-                    for e in convert(res):
-                        if e['offer'][9] != 'dailyFlat':
-                            offer: Offer = session.query(Offer).get(e['offer'][0])
-                            session.merge(Offer(*e['offer']))
-
-                            stats_exists = offer and offer.stats and offer.stats[-1].date == date.today()
-                            if e['statsDaily'][1] is None or e['statsDaily'][1] is None:
-                                print(offer_type, deal_type, current_page, 'Stats None')
-                                ok = False
-                                time.sleep(3)
-                                break
-                            if not stats_exists:
-                                session.merge(StatsDaily(*e['statsDaily']))
-                            elif stats_exists and (offer.stats[-1].stats_daily is None or offer.stats[-1].stats_daily <
-                                                   e['statsDaily'][2]):  # and e['statsDaily'][2] is not None
-                                session.query(StatsDaily) \
-                                    .filter_by(id=e['statsDaily'][0], date=date.today()) \
-                                    .update({"stats_total": e['statsDaily'][1], "stats_daily": e['statsDaily'][2]})
-
-                            if e['offer'][1] == 9383110:
-                                mc_count += 1
-                                session.merge(McityOffer(*e['mcityOffer']))
-
-                            hp = e['historyPromo']
-                            if offer and not offer.promos:
-                                print("Obj {} hasn't prices?".format(offer.id))
-                            if not (offer and offer.promos and offer.promos[-1].services == hp[1]):
-                                session.add(HistoryPromo(*hp))
-
-                            if e['historyPrice'] is None:
-                                print(offer_type, deal_type, current_page, 'Price None')
-                                continue
-                            for p in e['historyPrice']:
-                                h = HistoryPrice(*p)
-                                c = session.query(HistoryPrice).filter_by(id=h.id, time=h.time).count()
-                                if not c:
-                                    session.merge(h)
-
-                    if ok:
-                        session.commit()
-                        current_page += 1
-                        delay = randint(3, 10)
-                        length = res.__len__()
-                        print("{0} {1} {2} (inc {3} mcity) received.\nWaiting {4} seconds..".format(
-                            length, deal_type, offer_type, mc_count, delay
-                        ))
-                        time.sleep(delay)
-                        if length < 50:
-                            break  # Объявлений больше нет -> съёбки
+            bc_ids = [8366, 4769, 4784, 5779, 113167] if offer_type == 'office' else [8366]
+            for bc_id in bc_ids:
+                print('bc_id: {}'.format(bc_id))
+                process(offer_type, bc_id)
 
     except Exception as e:
         print(e)
@@ -159,7 +159,8 @@ def push(ok=True):
     title = 'Парсер отработал'
     mess = 'Данные успешно спизджены полностью' if ok else 'Пизда рулю. Все сломалось'
     act = 'https://docs.google.com/spreadsheets/d/1lPFc1p_5TNSxYOtJ4hSqcSMAiUig4slRQTdMmgJroic/edit#gid=656058326'
-    tok = 'cDBL0-jYBWQ:APA91bG294ZcB0TkztsUkt-hBayeC6kPnYBzY6swFSEgNtJGdB5ht1xm-Kq_7VokWMLH35ecV9SbR0PMm7qrxmXtTO8tPkNUJ09F1j2m0B923BYrh8mOzQGubb3xdNHR249mvwrWM-fb'
+    tok = 'cDBL0-jYBWQ:APA91bG294ZcB0TkztsUkt-hBayeC6kPnYBzY6swFSEgNtJGdB5ht1xm-Kq_7VokWMLH35ecV9SbR0PMm7qrxmXtTO' \
+          '8tPkNUJ09F1j2m0B923BYrh8mOzQGubb3xdNHR249mvwrWM-fb'
     body = {
       "notification": {
         "title": title,
@@ -171,7 +172,8 @@ def push(ok=True):
       "to": tok
     }
     headers = {
-        "Authorization": "key=AAAAdDA0FEM:APA91bGovsJXVAm0R3P5DNBZsWbvwbXacLmjvlDst2t3o8VNWUhJ63UUgNeZfcTZXuWQw9LWPHGJt5dn20hDBEDt-cjmw91i_ncfg9qE5eqifRNULeEbMPQgMRUpLw4yZrUCyeluO2TZ",
+        "Authorization": "key=AAAAdDA0FEM:APA91bGovsJXVAm0R3P5DNBZsWbvwbXacLmjvlDst2t3o8VNWUhJ63UUgNeZfcTZXuWQw9L"
+                         "WPHGJt5dn20hDBEDt-cjmw91i_ncfg9qE5eqifRNULeEbMPQgMRUpLw4yZrUCyeluO2TZ",
         "Content-Type": "application/json"
     }
     return requests.post(url, json=body, headers=headers).status_code
