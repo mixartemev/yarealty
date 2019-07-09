@@ -128,7 +128,7 @@ def history(offers: List[Offer]):
     start_date = date(2019, 7, 1)
     dates = []
     promo_data = []
-    for n in range((date.today() - start_date).days + 1):
+    for n in range((date.today() - start_date).days):
         dt = start_date + timedelta(n)
         if session.query(StatsDaily).filter_by(date=dt).count():
             dates.append(dt)

@@ -139,7 +139,8 @@ def main():
     # upd_stats()
     try:
         for offer_type in ['office', 'flat']:
-            bc_ids = [8366, 4769, 4784, 5779, 113167] if offer_type == 'office' else [8366]
+            bc_ids = [8366, 4769, 4784, 5779, 113167, 70122, 70121, 4006, 8356, 5848, 12516,
+                      57423, 5503, 66453, 77912, 12419, 5964, 6232] if offer_type == 'office' else [8366]
             for bc_id in bc_ids:
                 print('bc_id: {}'.format(bc_id))
                 process(offer_type, bc_id)
