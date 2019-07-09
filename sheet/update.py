@@ -125,10 +125,10 @@ def to_mc_sheet(offers: List[McityOffer]):
 
 def history(offers: List[Offer]):
     values = [['offer id', 'user', 'last price', 'area', 'average']]
-    start_date = date(2019, 5, 21)
+    start_date = date(2019, 7, 1)
     dates = []
     promo_data = []
-    for n in range((date.today() - start_date).days):
+    for n in range((date.today() - start_date).days + 1):
         dt = start_date + timedelta(n)
         if session.query(StatsDaily).filter_by(date=dt).count():
             dates.append(dt)
