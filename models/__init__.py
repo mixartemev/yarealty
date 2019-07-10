@@ -9,4 +9,4 @@ __all__ = ["Base", "Column", "ForeignKey", "Enum", "Integer", "BigInteger", "Sma
 
 # Load Base class for declarative way tables operating
 Base = declarative_base()
-Base.metadata.schema = 'cian'
+# Base.metadata.schema = 'cian'

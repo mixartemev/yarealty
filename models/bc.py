@@ -7,9 +7,9 @@ class Bc(Base):
     __tablename__ = 'bcs'
     id = Column(Integer, primary_key=True)
     typ = Column(Enum("БЦ", "ТЦ", name="typ", schema='cian'))
-    name = Column(String)
+    name = Column(String(255))
     parent_id = Column(Integer, ForeignKey('bcs.id'))
-    address = Column(String)
+    address = Column(String(255))
     editDate = Column(Date)
     offers = relationship("Offer", back_populates="bc")
     mcityOffers = relationship("McityOffer", back_populates="bc")

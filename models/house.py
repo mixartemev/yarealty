@@ -5,8 +5,8 @@ class House(Base):
     __tablename__ = 'houses'
     id = Column(Integer, primary_key=True)
     newbuilding_id = Column(Integer, ForeignKey('newbuildings.id'))
-    name = Column(String)
-    address = Column(String)
+    name = Column(String(255))
+    address = Column(String(255))
     newbuilding = relationship("Newbuilding", back_populates="houses")
     offers = relationship("Offer", back_populates="house")
     mcityOffers = relationship("McityOffer", back_populates="house")

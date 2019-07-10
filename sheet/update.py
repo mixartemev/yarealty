@@ -125,10 +125,10 @@ def to_mc_sheet(offers: List[McityOffer]):
 
 def history(offers: List[Offer]):
     values = [['offer id', 'user', 'last price', 'area', 'average']]
-    start_date = date(2019, 7, 1)
+    start_date = date(2019, 7, 9)
     dates = []
     promo_data = []
-    for n in range((date.today() - start_date).days):
+    for n in range((date.today() - start_date).days + 1):
         dt = start_date + timedelta(n)
         if session.query(StatsDaily).filter_by(date=dt).count():
             dates.append(dt)
@@ -215,20 +215,20 @@ def main():
         ).execute()
     print(result)
 
-    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
-    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
-
-    mcityOffers = session.query(McityOffer).all()
+    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
+    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
+    #
+    # mcityOffers = session.query(McityOffer).all()
     offers = session.query(Offer)  # todo make entire monolit grouped sql query, escape from cycles
 
-    result = service.spreadsheets().values().update(
-        spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
-    ).execute()
-    pprint(result)
-    result = service.spreadsheets().values().update(
-        spreadsheetId=SPREADSHEET_ID, range='all!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers.all())
-    ).execute()
-    pprint(result)
+    # result = service.spreadsheets().values().update(
+    #     spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
+    # ).execute()
+    # pprint(result)
+    # result = service.spreadsheets().values().update(
+    #     spreadsheetId=SPREADSHEET_ID, range='all!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers.all())
+    # ).execute()
+    # pprint(result)
 
     flatRent = offers.filter(
         or_(Offer.category == 'flat', Offer.category == 'newBuildingFlat'),

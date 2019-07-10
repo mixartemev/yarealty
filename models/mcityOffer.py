@@ -15,13 +15,13 @@ from models.statsDaily import StatsDaily
 
 class McityOffer(Base):
     __tablename__ = 'mcity_offers'
-    id = Column(BigInteger, primary_key=True)
+    id = Column(Integer, primary_key=True)
     idd = Column(Integer)
     bc_id = Column(Integer, ForeignKey('bcs.id'))
     house_id = Column(Integer, ForeignKey('houses.id'))
     newbuilding_id = Column(Integer, ForeignKey('newbuildings.id'))
 
-    description = Column(String)
+    description = Column(String(255))
     creationDate = Column(Date)
     editDate = Column(Date)
     publishDate = Column(Date)

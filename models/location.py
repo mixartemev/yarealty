@@ -5,7 +5,7 @@ from models.newbuilding import Newbuilding
 class Location(Base):
     __tablename__ = 'locations'
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String(255))
     # Have many Newbuildings
     newbuildings = relationship("Newbuilding", order_by=Newbuilding.id, back_populates="region")
 

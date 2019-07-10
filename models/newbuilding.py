@@ -5,9 +5,9 @@ from models.house import House
 class Newbuilding(Base):
     __tablename__ = 'newbuildings'
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String(255))
     region_id = Column(Integer, ForeignKey('locations.id'))
-    address = Column(String)
+    address = Column(String(255))
     # Belongs to Region
     region = relationship(
         "Location",  # foreign model name

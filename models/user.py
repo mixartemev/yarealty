@@ -12,7 +12,7 @@ class User(Base):
         "owner",
     ]
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String(255))
     creation_date = Column(Date)
     is_profi = Column(Boolean)
     is_private_broker = Column(Boolean)

@@ -14,39 +14,39 @@ from userConverter import userConvert
 from db import session
 from req import make as make_request
 from converter import convert
-# from models.bc import Bc
-# from models.house import House
-# from models.location import Location
-# from models.newbuilding import Newbuilding
-# import csv
-#
-# with open('temp/locations.tsv') as tsvfile:
-#     reader = csv.reader(tsvfile, delimiter='\t')
-#     for row in reader:
-#         params = tuple(row)
-#         session.merge(Location(*params))
-#
-# with open('temp/newbuildings.tsv') as tsvfile:
-#     reader = csv.reader(tsvfile, delimiter='\t')
-#     for row in reader:
-#         params = tuple(row)
-#         session.merge(Newbuilding(*params))
-#
-# with open('temp/houses.tsv') as tsvfile:
-#     reader = csv.reader(tsvfile, delimiter='\t')
-#     for row in reader:
-#         params = tuple(row)
-#         session.merge(House(*params))
-#
-# with open('temp/bc.tsv') as tsvfile:
-#     reader = csv.reader(tsvfile, delimiter='\t')
-#     for row in reader:
-#         if row[3]:
-#             if not session.query(Bc).get(row[3]):
-#                 continue
-#         params = tuple(row)
-#         session.merge(Bc(*params))
-# session.commit()
+from models.bc import Bc
+from models.house import House
+from models.location import Location
+from models.newbuilding import Newbuilding
+import csv
+
+with open('temp/locations.tsv') as tsvfile:
+    reader = csv.reader(tsvfile, delimiter='\t')
+    for row in reader:
+        params = tuple(row)
+        session.merge(Location(*params))
+
+with open('temp/newbuildings.tsv') as tsvfile:
+    reader = csv.reader(tsvfile, delimiter='\t')
+    for row in reader:
+        params = tuple(row)
+        session.merge(Newbuilding(*params))
+
+with open('temp/houses.tsv') as tsvfile:
+    reader = csv.reader(tsvfile, delimiter='\t')
+    for row in reader:
+        params = tuple(row)
+        session.merge(House(*params))
+
+with open('temp/bc.tsv') as tsvfile:
+    reader = csv.reader(tsvfile, delimiter='\t')
+    for row in reader:
+        if row[3]:
+            if not session.query(Bc).get(row[3]):
+                continue
+        params = tuple(row)
+        session.merge(Bc(*params))
+session.commit()
 
 
 def upd_stats():
