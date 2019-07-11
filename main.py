@@ -87,6 +87,11 @@ def process(offer_type, bc_id):  # todo refactor: bc_id needs only for offices
             for e in convert(res):
                 if e['offer'][9] != 'dailyFlat':
                     offer: Offer = session.query(Offer).get(e['offer'][0])
+                    userId = e['offer'][1]
+                    if not session.query(User).get(userId):
+                        print('no user {}'.format(userId))
+                        session.merge(User(userId, 'Anonimus', date.today(), None, None, None, None, 5, None))
+
                     session.merge(Offer(*e['offer']))
 
                     stats_exists = offer and offer.stats and offer.stats[-1].date == date.today()
