@@ -8,5 +8,5 @@ engine = create_engine('mysql://mixartemev:mixfixX98@old.mcity.ru/cian', echo=Fa
 # Base.metadata.schema = 'cian'
 # Create all not created defined tables
 Base.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
+Session = sessionmaker(bind=engine)  # , autoflush=False)
 session = Session()
