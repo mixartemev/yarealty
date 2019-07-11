@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 
 from sqlalchemy import DateTime, func
@@ -21,7 +22,7 @@ class Offer(Base):
     house_id = Column(Integer, ForeignKey('houses.id'))
     newbuilding_id = Column(Integer, ForeignKey('newbuildings.id'))
 
-    description = Column(String(255))
+    description = Column(String(4095))
     creationDate = Column(Date)
     editDate = Column(Date)
     publishDate = Column(Date)
@@ -80,9 +81,9 @@ class Offer(Base):
         self.house_id = house_id
         self.newbuilding_id = newbuilding_id
         self.description = description
-        self.creationDate = creationDate
-        self.editDate = editDate
-        self.publishDate = publishDate
+        self.creationDate = datetime.strptime(creationDate, '%Y-%m-%dT%H:%M:%S.%f').date()
+        self.editDate = datetime.fromisoformat(editDate).date()
+        self.publishDate = datetime.fromisoformat(publishDate).date()
         self.category = category
         self.dealType = dealType
         self.status = status
