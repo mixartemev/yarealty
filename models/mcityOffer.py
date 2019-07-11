@@ -21,7 +21,7 @@ class McityOffer(Base):
     house_id = Column(Integer, ForeignKey('houses.id'))
     newbuilding_id = Column(Integer, ForeignKey('newbuildings.id'))
 
-    description = Column(String(255))
+    description = Column(String(4095))
     creationDate = Column(Date)
     editDate = Column(Date)
     publishDate = Column(Date)

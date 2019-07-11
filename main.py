@@ -90,7 +90,7 @@ def process(offer_type, bc_id):  # todo refactor: bc_id needs only for offices
                     userId = e['offer'][1]
                     if not session.query(User).get(userId):
                         print('no user {}'.format(userId))
-                        session.merge(User(userId, 'Anonimus', date.today(), None, None, None, None, 5, None))
+                        session.merge(User(userId, 'Anonimus', date.today().isoformat(), None, None, None, None, 5, None))
 
                     session.merge(Offer(*e['offer']))
 

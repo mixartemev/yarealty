@@ -81,7 +81,7 @@ class Offer(Base):
         self.house_id = house_id
         self.newbuilding_id = newbuilding_id
         self.description = description
-        self.creationDate = datetime.strptime(creationDate, '%Y-%m-%dT%H:%M:%S.%f').date()
+        self.creationDate = datetime.strptime(creationDate, '%Y-%m-%dT%H:%M:%S.%f').date() if '.' in creationDate else datetime.fromisoformat(creationDate).date()
         self.editDate = datetime.fromisoformat(editDate).date()
         self.publishDate = datetime.fromisoformat(publishDate).date()
         self.category = category
