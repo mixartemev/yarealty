@@ -5,4 +5,4 @@ google-auth-oauthlib
 requests
 sqlalchemy
 psycopg2-binary
-mysqlclient
+mysql-connector-python
