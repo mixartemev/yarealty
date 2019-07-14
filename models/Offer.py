@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 from typing import List
 
 from sqlalchemy import DateTime, func
