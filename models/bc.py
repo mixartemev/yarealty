@@ -1,6 +1,6 @@
 from sqlalchemy.orm import backref
 from models import *
-import datetime
+from datetime import datetime
 
 
 class Bc(Base):
