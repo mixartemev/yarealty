@@ -85,7 +85,7 @@ def process(offer_type, bc_id):  # todo refactor: bc_id needs only for offices
             ok = True
 
             for e in convert(res):
-                if e['offer'][9] != 'dailyFlat':
+                if e['offer'][9] not in ['dailyFlat', 'warehouse']:
                     offer: Offer = session.query(Offer).get(e['offer'][0])
                     userId = e['offer'][1]
                     if not session.query(User).get(userId):
