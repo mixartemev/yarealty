@@ -215,20 +215,20 @@ def main():
         ).execute()
     print(result)
 
-    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
-    # service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
-    #
-    # mcityOffers = session.query(McityOffer).all()
+    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='mcity!A2:W1000').execute()
+    service.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range='all!A2:W5000').execute()
+
+    mcityOffers = session.query(McityOffer).all()
     offers = session.query(Offer)  # todo make entire monolit grouped sql query, escape from cycles
 
-    # result = service.spreadsheets().values().update(
-    #     spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
-    # ).execute()
-    # pprint(result)
-    # result = service.spreadsheets().values().update(
-    #     spreadsheetId=SPREADSHEET_ID, range='all!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers.all())
-    # ).execute()
-    # pprint(result)
+    result = service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID, range='mcity!A2', valueInputOption='USER_ENTERED', body=to_mc_sheet(mcityOffers)
+    ).execute()
+    pprint(result)
+    result = service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID, range='all!A2', valueInputOption='USER_ENTERED', body=to_sheet(offers.all())
+    ).execute()
+    pprint(result)
 
     flatRent = offers.filter(
         or_(Offer.category == 'flat', Offer.category == 'newBuildingFlat'),
