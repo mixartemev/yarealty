@@ -125,7 +125,7 @@ def to_mc_sheet(offers: List[McityOffer]):
 
 def history(offers: List[Offer]):
     values = [['offer id', 'user', 'last price', 'area', 'average']]
-    days_ago = 7
+    days_ago = 10
     dates = []
     promo_data = []
     for n in range(0, days_ago):
@@ -147,10 +147,9 @@ def history(offers: List[Offer]):
         promo_row_values = []
         si = 0
         for cur_date in dates:
-            sl = o.stats.__len__()
-            nearest_date = o.stats[si].date if sl > si else None
-            if nearest_date == cur_date:
-                row.append(o.stats[si].stats_daily if o.stats[si].stats_daily is not None else '?')
+            stat = session.query(StatsDaily).filter_by(id=o.id, date=cur_date).first()
+            if stat:
+                row.append(stat.stats_daily if stat.stats_daily is not None else '?')  # todo why?
                 promo: HistoryPromo = session.query(HistoryPromo)\
                     .filter(HistoryPromo.date <= cur_date.isoformat(), HistoryPromo.id == o.id)\
                     .order_by(HistoryPromo.date.desc())\
