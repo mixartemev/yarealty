@@ -313,12 +313,12 @@ def dyn(dyn_sheet_id, dyn_sheet_title, offs: [Offer]):
         "color": {},
     }
 
-    # clear_format = {'requests': [{"deleteConditionalFormatRule": {"sheetId": dyn_sheet_id}}]}
-    # for i in range(5):
-    #     response = service.spreadsheets() \
-    #         .batchUpdate(spreadsheetId=SPREADSHEET_ID, body=clear_format).execute()
-    #     print('{0} cells updated.'.format(len(response.get('replies'))))
-    #     print(response)
+    clear_format = {'requests': [{"deleteConditionalFormatRule": {"sheetId": dyn_sheet_id}}]}
+    for i in range(5):
+        response = service.spreadsheets() \
+            .batchUpdate(spreadsheetId=SPREADSHEET_ID, body=clear_format).execute()
+        print('{0} cells updated.'.format(len(response.get('replies'))))
+        print(response)
 
     requests = [
         {
