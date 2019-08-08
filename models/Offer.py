@@ -33,7 +33,7 @@ class Offer(Base):
     currency = Column(Enum("rur", "usd", "eur", name='currency', schema='cian'))
     paymentPeriod = Column(Enum("monthly", "annual", name='paymentPeriod', schema='cian'))
     floorNumber = Column(SmallInteger)
-    totalArea = Column(DECIMAL(7, 2))
+    totalArea = Column(DECIMAL(9, 2))
     userTrust = Column(Enum("involved", "notInvolved", "new", "excluded", name='userTrust', schema='cian'))
     isPro = Column(Boolean)
     publishTerms_autoprolong = Column(Boolean)
