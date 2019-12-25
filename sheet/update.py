@@ -125,7 +125,7 @@ def to_mc_sheet(offers: List[McityOffer]):
 
 def history(offers: List[Offer]):
     values = [['offer id', 'user', 'last price', 'area', 'average']]
-    start_date = date(2019, 7, 1)
+    start_date = date(2019, 12, 1)
     dates = []
     promo_data = []
     for n in range((date.today() - start_date).days):
