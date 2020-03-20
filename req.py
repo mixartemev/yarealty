@@ -1,6 +1,6 @@
 import requests
 
-COMMON_URL = "http://api.cian.ru/search-offers/v1/search-offers-for-mobile-apps/" \
+COMMON_URL = "http://api.cian.ru/search-offers/v3/search-offers-mobile-apps/" \
           "?deal_type={0}&offer_type={1}&p={2}&engine_version=2&new_schema=1&per_page=50"
 
 OFFICE_URL = COMMON_URL + "&bs_center_id={3}"
